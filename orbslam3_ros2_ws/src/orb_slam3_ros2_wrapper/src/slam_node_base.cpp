@@ -39,10 +39,10 @@ namespace ORB_SLAM3_Wrapper
 
         // ROS Publishers
         //---- the following is published when a service is called
-        mapPointsPub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("map_points", 10);
-        visibleLandmarksPub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("visible_landmarks", 10);
-        visibleLandmarksPose_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("visible_landmarks_pose", 10);
-        slamInfoPub_ = this->create_publisher<slam_msgs::msg::SlamInfo>("slam_info", 10);
+        mapPointsPub_   = this->create_publisher<sensor_msgs::msg::PointCloud2>("map_points", 10);
+        visibleLandmarksPub_    = this->create_publisher<sensor_msgs::msg::PointCloud2>("visible_landmarks", 10);
+        visibleLandmarksPose_   = this->create_publisher<geometry_msgs::msg::PoseStamped>("visible_landmarks_pose", 10);
+        slamInfoPub_    = this->create_publisher<slam_msgs::msg::SlamInfo>("slam_info", 10);
         //---- the following is published continously
         mapDataPub_ = this->create_publisher<slam_msgs::msg::MapData>("map_data", 10);
         robotPoseMapFrame_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("robot_pose_slam", 10);

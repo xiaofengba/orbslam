@@ -1450,15 +1450,15 @@ bool Tracking::GetStepByStep()
 }
 
 
-
+// 让跟踪器抓取双目图像
 Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat &imRectRight, const double &timestamp, string filename)
 {
-    //cout << "GrabImageStereo" << endl;
 
     mImGray = imRectLeft;
     cv::Mat imGrayRight = imRectRight;
     mImRight = imRectRight;
 
+    // 如果是RGB， 将转换为灰度图
     if(mImGray.channels()==3)
     {
         //cout << "Image with 3 channels" << endl;
@@ -1489,17 +1489,46 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat 
     }
 
     //cout << "Incoming frame creation" << endl;
+    '''
+    参数说明：
+        mImGray             : 左目相机的灰度图像；系统的主要输入，用于提取特征点、进行位姿跟踪。如果是单目模式，只用这一张。
+        imGrayRight         : 右目相机的灰度图像；仅在双目模式下使用, 用于提取右图特征，并通过匹配计算深度（Stereo Matching
+        timestamp           : 时间戳
+        mpORBextractorLeft  : 左图的 ORB 特征提取器指针； 包含了提取参数（如金字塔层数、每层特征点数量、缩放因子等），负责对 mImGray 进行处理
+        mpORBextractorRight : 右图的 ORB 特征提取器指针； 通常参数与左图相同，但有时为了节省计算量，右图可能提取较少的特征（仅用于深度计算，不参与回环检测
+        mpORBVocabulary     : ORB 词袋数据库 (DBoW2 Vocabulary) 指针； 将当前帧的特征描述子转化为“单词向量”
+        mK                  : 相机的内参矩阵 (3x3), 标准相机（针孔模型）模型参数
+        mDistCoef           : 畸变系数， 用于图像去畸变； 通用相机模型的畸变参数在mpCamera中定义
+        mpCamera            : 左相机的几何模型对象； 比K和D更适用，可以是鱼眼、针孔等模型
+        mpCamera2           : 右相机的几何模型对象  
+        mbf                 : 基线长度 x 焦距 ； 用于快速计算深度(mbf/视差)
+        mThDepth            : 区分“近点”和“远点”的深度阈值
+        mTlr                : 右相机到左相机的变换矩阵
+        &mLastFrame         : 上一帧IMU的引用
+        *mpImuCalib         : IMU 标定参数对象 ； 包含到相机的外参、噪声系数
+    '''
 
+    // 注意Frame的输入为双目、以及是否有mpCamera2就可以区别出来了
+    '''
+    1. 执行特征提取
+    2. 矫正特征点(输入是矫正的， 除了鱼眼相机一般不会执行这一步骤)
+    3. 执行双目特征匹配
+    4. 
+    '''
+    // 标准纯双目： 传统的针孔双目相机，输入图像已经过极线校正
     if (mSensor == System::STEREO && !mpCamera2)
         mCurrentFrame = Frame(mImGray,imGrayRight,timestamp,mpORBextractorLeft,mpORBextractorRight,mpORBVocabulary,mK,mDistCoef,mbf,mThDepth,mpCamera);
+    // 通用纯双目： 双鱼眼或未校正的双目相机
     else if(mSensor == System::STEREO && mpCamera2)
         mCurrentFrame = Frame(mImGray,imGrayRight,timestamp,mpORBextractorLeft,mpORBextractorRight,mpORBVocabulary,mK,mDistCoef,mbf,mThDepth,mpCamera,mpCamera2,mTlr);
+    // 标准双目惯导
     else if(mSensor == System::IMU_STEREO && !mpCamera2)
         mCurrentFrame = Frame(mImGray,imGrayRight,timestamp,mpORBextractorLeft,mpORBextractorRight,mpORBVocabulary,mK,mDistCoef,mbf,mThDepth,mpCamera,&mLastFrame,*mpImuCalib);
+    // 通用双目惯导
     else if(mSensor == System::IMU_STEREO && mpCamera2)
         mCurrentFrame = Frame(mImGray,imGrayRight,timestamp,mpORBextractorLeft,mpORBextractorRight,mpORBVocabulary,mK,mDistCoef,mbf,mThDepth,mpCamera,mpCamera2,mTlr,&mLastFrame,*mpImuCalib);
 
-    //cout << "Incoming frame ended" << endl;
+    //  cout << "Incoming frame ended" << endl;
 
     mCurrentFrame.mNameFile = filename;
     mCurrentFrame.mnDataset = mnNumDataset;
@@ -1794,6 +1823,9 @@ void Tracking::ResetFrameIMU()
 void Tracking::Track()
 {
 
+    /*  ************************************************
+    step1： 数据检查
+    ****************************************************/
     if (bStepByStep)
     {
         std::cout << "Tracking: Waiting to the next step" << std::endl;
@@ -1855,7 +1887,10 @@ void Tracking::Track()
         }
     }
 
-
+    /*  ************************************************
+    step2： IMU数据处理
+    ****************************************************/
+    // 如果有IMU参数，那么当前帧的IMU的bias应当和上一帧的bias相当
     if ((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) && mpLastKeyFrame)
         mCurrentFrame.SetNewBias(mpLastKeyFrame->GetImuBias());
 
@@ -1866,6 +1901,7 @@ void Tracking::Track()
 
     mLastProcessedState=mState;
 
+    // IMU的预积分执行
     if ((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) && !mbCreatedMap)
     {
 #ifdef REGISTER_TIMES
@@ -1895,7 +1931,9 @@ void Tracking::Track()
         mbMapUpdated = true;
     }
 
-
+    /*  ************************************************
+    step3： 系统初始化
+    ****************************************************/
     if(mState==NOT_INITIALIZED)
     {
         if(mSensor==System::STEREO || mSensor==System::RGBD || mSensor==System::IMU_STEREO || mSensor==System::IMU_RGBD)

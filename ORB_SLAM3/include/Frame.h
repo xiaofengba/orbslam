@@ -210,10 +210,10 @@ public:
     cv::Mat mDistCoef;
 
     // Stereo baseline multiplied by fx.
-    float mbf;
+    float mbf;                                                                                          // 基线x焦距
 
     // Stereo baseline in meters.
-    float mb;
+    float mb;                                                                                           // 基线     
 
     // Threshold close/far points. Close points are inserted from 1 view.
     // Far points are inserted as in the monocular case from 2 views.
@@ -225,25 +225,25 @@ public:
     // Vector of keypoints (original for visualization) and undistorted (actually used by the system).
     // In the stereo case, mvKeysUn is redundant as images must be rectified.
     // In the RGB-D case, RGB images can be distorted.
-    std::vector<cv::KeyPoint> mvKeys, mvKeysRight;
-    std::vector<cv::KeyPoint> mvKeysUn;
+    std::vector<cv::KeyPoint> mvKeys, mvKeysRight;                                                      // 基础数据：左图特征点、右图特征点
+    std::vector<cv::KeyPoint> mvKeysUn; 
 
     // Corresponding stereo coordinate and depth for each keypoint.
     std::vector<MapPoint*> mvpMapPoints;
     // "Monocular" keypoints have a negative value.
-    std::vector<float> mvuRight;
-    std::vector<float> mvDepth;
+    std::vector<float> mvuRight;                                                                        // 左目特征点在右图中的横坐标
+    std::vector<float> mvDepth;                                                                         // 特征点的深度值
 
     // Bag of Words Vector structures.
     DBoW2::BowVector mBowVec;
     DBoW2::FeatureVector mFeatVec;
 
     // ORB descriptor, each row associated to a keypoint.
-    cv::Mat mDescriptors, mDescriptorsRight;
+    cv::Mat mDescriptors, mDescriptorsRight;                                                            // 基础数据： 左图特征描述子、右图特征描述子
 
     // MapPoints associated to keypoints, NULL pointer if no association.
     // Flag to identify outlier associations.
-    std::vector<bool> mvbOutlier;
+    std::vector<bool> mvbOutlier;                                                                       // 基础数据： 在位姿优化（G2O / BA）后，被判定为投影误差过大的点会被标记为 true
     int mnCloseMPs;
 
     // Keypoints are assigned to cells in a grid to reduce matching complexity when projecting MapPoints.
@@ -257,11 +257,11 @@ public:
     IMU::Bias mImuBias;
 
     // Imu calibration
-    IMU::Calib mImuCalib;
+    IMU::Calib mImuCalib;                                                                               // IMU 的标定数据：外参、噪声
 
     // Imu preintegration from last keyframe
-    IMU::Preintegrated* mpImuPreintegrated;
-    KeyFrame* mpLastKeyFrame;
+    IMU::Preintegrated* mpImuPreintegrated;                                                             // IMU 预积分对象指针
+    KeyFrame* mpLastKeyFrame;                                                                           // 指向上一帧的指针
 
     // Pointer to previous frame
     Frame* mpPrevFrame;

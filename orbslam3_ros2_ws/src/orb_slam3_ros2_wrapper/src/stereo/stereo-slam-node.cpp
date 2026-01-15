@@ -18,13 +18,15 @@ namespace ORB_SLAM3_Wrapper
                                    ORB_SLAM3::System::eSensor sensor)
         : SlamNodeBase("ORB_SLAM3_STEREO_ROS2", strVocFile, strSettingsFile, sensor)
     {
+        // 上面都是初始化了部分的话题发布者
+        // 下面的都是设置ROS2的话题订阅， 并设置回调函数为SLAM的双目回调
         std::cout << "==========" << std::endl;
         // Declare parameters (topic names)
         this->declare_parameter("left_image_topic_name", rclcpp::ParameterValue("left/image_raw"));
         this->declare_parameter("right_image_topic_name", rclcpp::ParameterValue("right/image_raw"));
 
         // ROS Subscribers
-        leftSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("left_image_topic_name").as_string());
+        leftSub_  = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("left_image_topic_name").as_string());
         rightSub_ = std::make_shared<message_filters::Subscriber<sensor_msgs::msg::Image>>(this, this->get_parameter("right_image_topic_name").as_string());
         syncApproximate_ = std::make_shared<message_filters::Synchronizer<approximate_sync_policy>>(approximate_sync_policy(10), *leftSub_, *rightSub_);
         syncApproximate_->registerCallback(&StereoSlamNode::StereoCallback, this);
@@ -68,8 +70,10 @@ namespace ORB_SLAM3_Wrapper
             return;
         }
 
+        // 注意当前是继承了 SLAMNode-Base 类的
         const double tFrame = std::min(stampToSec(msgLeft->header.stamp), stampToSec(msgRight->header.stamp));
 
+        // 逻辑是调用父类的方法interface()返回的指针，然后再调用slam()返回的指针，然后调用SLAM中的追踪双目
         auto Tcw = interface()->slam()->TrackStereo(cvLeft->image, cvRight->image, tFrame);
 
         if (interface()->processTrackedPose(Tcw))

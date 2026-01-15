@@ -74,38 +74,18 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
        exit(-1);
     }
 
-    std::cout << "sys 1.1" << std::endl;
-    std::cout << "sys 1.2" << std::endl;
-
-    // 1. 打印指针地址，确保不是空指针
-    std::cout << "DEBUG: settings_ pointer address: " << settings_ << std::endl;
-
-    // 2. 关键检查：打印 Wrapper 认为的 Settings 类的大小
-    std::cout << "DEBUG: sizeof(Settings) in Wrapper: " << sizeof(ORB_SLAM3::Settings) << std::endl;
-
     settings_ = new Settings(strSettingsFile,mSensor);
     
-    // 再次确认 new 之后的地址
-    std::cout << "DEBUG: settings_ address after new: " << settings_ << std::endl;
-
-    // 3. 尝试调用
-    std::cout << "DEBUG: Attempting to call atlasLoadFile()..." << std::endl;
     mStrLoadAtlasFromFile = settings_->atlasLoadFile();
     
     cv::FileNode node = fsSettings["File.version"];
     if(!node.empty() && node.isString() && node.string() == "1.0"){
 
-        std::cout << "sys 1.2" << std::endl;
-
         settings_ = new Settings(strSettingsFile,mSensor);
 
         mStrLoadAtlasFromFile = settings_->atlasLoadFile();
 
-        std::cout << "sys 1.3" << std::endl;
-
         mStrSaveAtlasToFile = settings_->atlasSaveFile();
-
-        std::cout << "sys 1.4" << std::endl;
 
         cout << (*settings_) << endl;
     }
@@ -123,8 +103,6 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
             mStrSaveAtlasToFile = (string)node;
         }
     }
-    std::cout << "sys 2" << std::endl;
-
 
     node = fsSettings["loopClosing"];
     bool activeLC = true;
@@ -134,10 +112,8 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     }
 
     mStrVocabularyFilePath = strVocFile;
-    std::cout << "sys 2.1" << std::endl;
 
     bool loadedAtlas = false;
-    std::cout << "sys 3" << std::endl;
 
     if(mStrLoadAtlasFromFile.empty())
     {
@@ -222,7 +198,7 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
                              mpAtlas, mpKeyFrameDatabase, strSettingsFile, mSensor, settings_, strSequence);
 
     //Initialize the Local Mapping thread and launch
-    mpLocalMapper = new LocalMapping(this, mpAtlas, mSensor==MONOCULAR || mSensor==IMU_MONOCULAR,
+    mpLocalMapper   = new LocalMapping(this, mpAtlas, mSensor==MONOCULAR || mSensor==IMU_MONOCULAR,
                                      mSensor==IMU_MONOCULAR || mSensor==IMU_STEREO || mSensor==IMU_RGBD, strSequence);
     mptLocalMapping = new thread(&ORB_SLAM3::LocalMapping::Run,mpLocalMapper);
     mpLocalMapper->mInitFr = initFr;
@@ -291,6 +267,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, 
         exit(-1);
     }
 
+    // 矫正图像、缩放图像
     cv::Mat imLeftToFeed, imRightToFeed;
     if(settings_ && settings_->needToRectify()){
         cv::Mat M1l = settings_->M1l();
@@ -298,21 +275,23 @@ Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, 
         cv::Mat M1r = settings_->M1r();
         cv::Mat M2r = settings_->M2r();
 
-        cv::remap(imLeft, imLeftToFeed, M1l, M2l, cv::INTER_LINEAR);
-        cv::remap(imRight, imRightToFeed, M1r, M2r, cv::INTER_LINEAR);
+        cv::remap(imLeft,   imLeftToFeed,   M1l, M2l, cv::INTER_LINEAR);
+        cv::remap(imRight,  imRightToFeed,  M1r, M2r, cv::INTER_LINEAR);
     }
     else if(settings_ && settings_->needToResize()){
         cv::resize(imLeft,imLeftToFeed,settings_->newImSize());
         cv::resize(imRight,imRightToFeed,settings_->newImSize());
     }
     else{
-        imLeftToFeed = imLeft.clone();
-        imRightToFeed = imRight.clone();
+        imLeftToFeed    = imLeft.clone();
+        imRightToFeed   = imRight.clone();
     }
+
 
     // Check mode change
     {
         unique_lock<mutex> lock(mMutexMode);
+        // 定位模式
         if(mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();
@@ -326,6 +305,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, 
             mpTracker->InformOnlyTracking(true);
             mbActivateLocalizationMode = false;
         }
+        // 非定位模式
         if(mbDeactivateLocalizationMode)
         {
             mpTracker->InformOnlyTracking(false);
@@ -337,31 +317,34 @@ Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, 
     // Check reset
     {
         unique_lock<mutex> lock(mMutexReset);
+        // 复位模式
         if(mbReset)
         {
             mpTracker->Reset();
             mbReset = false;
             mbResetActiveMap = false;
         }
+        // 
         else if(mbResetActiveMap)
         {
             mpTracker->ResetActiveMap();
             mbResetActiveMap = false;
         }
     }
-
+    // 如果传感器类型为IMU双目，提取IMU数据到跟踪器中
     if (mSensor == System::IMU_STEREO)
         for(size_t i_imu = 0; i_imu < vImuMeas.size(); i_imu++)
             mpTracker->GrabImuData(vImuMeas[i_imu]);
 
     // std::cout << "start GrabImageStereo" << std::endl;
+    // 输入的图像是经过裁减、矫正后的图像
     Sophus::SE3f Tcw = mpTracker->GrabImageStereo(imLeftToFeed,imRightToFeed,timestamp,filename);
 
     // std::cout << "out grabber" << std::endl;
 
     unique_lock<mutex> lock2(mMutexState);
-    mTrackingState = mpTracker->mState;
-    mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
+    mTrackingState      = mpTracker->mState;
+    mTrackedMapPoints   = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
     return Tcw;
