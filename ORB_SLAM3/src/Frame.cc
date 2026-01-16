@@ -98,13 +98,13 @@ Frame::Frame(const Frame &frame)
 }
 
 // 标准双目 + IMU
-'''
+/*'''
 适用的输入： 
     1. 输入的左右图像已经经过了极线校正 (Rectified)，或者是纯针孔模型且无畸变。
     2. 左右相机共用同一套内参
     3. 图像是行对齐的（特征点在同一行上搜索）
     4. 包含 IMU 数据
-'''
+'''*/
 Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, ORBextractor* extractorLeft, ORBextractor* extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, GeometricCamera* pCamera, Frame* pPrevF, const IMU::Calib &ImuCalib)
     :mpcpi(NULL), mpORBvocabulary(voc),mpORBextractorLeft(extractorLeft),mpORBextractorRight(extractorRight), mTimeStamp(timeStamp), mK(K.clone()), mK_(Converter::toMatrix3f(K)), mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth),
      mImuCalib(ImuCalib), mpImuPreintegrated(NULL), mpPrevFrame(pPrevF),mpImuPreintegratedFrame(NULL), mpReferenceKF(static_cast<KeyFrame*>(NULL)), mbIsSet(false), mbImuPreintegrated(false),
@@ -122,6 +122,7 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeSt
     mvLevelSigma2 = mpORBextractorLeft->GetScaleSigmaSquares();
     mvInvLevelSigma2 = mpORBextractorLeft->GetInverseScaleSigmaSquares();
 
+    // 并行 ORB 特征提取，传入的flag代表了是左目还是右目，结果包含左右目的关键点、关键点的描述子
     // ORB extraction
 #ifdef REGISTER_TIMES
     std::chrono::steady_clock::time_point time_StartExtORB = std::chrono::steady_clock::now();
@@ -136,15 +137,20 @@ Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeSt
     mTimeORB_Ext = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_EndExtORB - time_StartExtORB).count();
 #endif
 
+    // 计算左目关键点的数目
     N = mvKeys.size();
     if(mvKeys.empty())
         return;
 
+
+    // 矫正特征点，一般图像已经经过了矫正，大部分是不需要再矫正的了，或者这里实际不需要矫正
     UndistortKeyPoints();
 
 #ifdef REGISTER_TIMES
     std::chrono::steady_clock::time_point time_StartStereoMatches = std::chrono::steady_clock::now();
 #endif
+
+    // 立体匹配并计算深度， 理论是左目N个关键点对右目N个关键点进行匹配，但是增加了极线约束，提升了匹配的效率
     ComputeStereoMatches();
 #ifdef REGISTER_TIMES
     std::chrono::steady_clock::time_point time_EndStereoMatches = std::chrono::steady_clock::now();
@@ -815,7 +821,7 @@ void Frame::ComputeImageBounds(const cv::Mat &imLeft)
         mnMaxY = imLeft.rows;
     }
 }
-
+// 立体匹配并计算深度，更新 mvuRight 和 mvDepth 
 void Frame::ComputeStereoMatches()
 {
     mvuRight = vector<float>(N,-1.0f);

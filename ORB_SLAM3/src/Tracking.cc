@@ -1489,7 +1489,7 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat 
     }
 
     //cout << "Incoming frame creation" << endl;
-    '''
+    /*'''
     参数说明：
         mImGray             : 左目相机的灰度图像；系统的主要输入，用于提取特征点、进行位姿跟踪。如果是单目模式，只用这一张。
         imGrayRight         : 右目相机的灰度图像；仅在双目模式下使用, 用于提取右图特征，并通过匹配计算深度（Stereo Matching
@@ -1506,15 +1506,16 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat 
         mTlr                : 右相机到左相机的变换矩阵
         &mLastFrame         : 上一帧IMU的引用
         *mpImuCalib         : IMU 标定参数对象 ； 包含到相机的外参、噪声系数
-    '''
+    '''*/
 
     // 注意Frame的输入为双目、以及是否有mpCamera2就可以区别出来了
-    '''
+    /*'''
     1. 执行特征提取
     2. 矫正特征点(输入是矫正的， 除了鱼眼相机一般不会执行这一步骤)
     3. 执行双目特征匹配
-    4. 
+    4. 双目特征匹配特征的深度值
     '''
+    */
     // 标准纯双目： 传统的针孔双目相机，输入图像已经过极线校正
     if (mSensor == System::STEREO && !mpCamera2)
         mCurrentFrame = Frame(mImGray,imGrayRight,timestamp,mpORBextractorLeft,mpORBextractorRight,mpORBVocabulary,mK,mDistCoef,mbf,mThDepth,mpCamera);
@@ -1883,11 +1884,10 @@ void Tracking::Track()
                 }
                 return;
             }
-
         }
     }
 
-    /*  ************************************************
+    /***************************************************
     step2： IMU数据处理
     ****************************************************/
     // 如果有IMU参数，那么当前帧的IMU的bias应当和上一帧的bias相当
@@ -1923,15 +1923,15 @@ void Tracking::Track()
 
     mbMapUpdated = false;
 
-    int nCurMapChangeIndex = pCurrentMap->GetMapChangeIndex();
-    int nMapChangeIndex = pCurrentMap->GetLastMapChange();
+    int nCurMapChangeIndex  = pCurrentMap->GetMapChangeIndex();
+    int nMapChangeIndex     = pCurrentMap->GetLastMapChange();
     if(nCurMapChangeIndex>nMapChangeIndex)
     {
         pCurrentMap->SetLastMapChange(nCurMapChangeIndex);
         mbMapUpdated = true;
     }
 
-    /*  ************************************************
+    /***************************************************
     step3： 系统初始化
     ****************************************************/
     if(mState==NOT_INITIALIZED)
@@ -1958,6 +1958,9 @@ void Tracking::Track()
             mnFirstFrameId = mCurrentFrame.mnId;
         }
     }
+    /***************************************************
+    step4： 位姿预测
+    ****************************************************/
     else
     {
         // System is initialized. Track Frame.
@@ -1971,7 +1974,7 @@ void Tracking::Track()
         if(!mbOnlyTracking)
         {
 
-            // State OK
+            // State OK： 恒速模型 / 参考关键帧定位
             // Local Mapping is activated. This is the normal behaviour, unless
             // you explicitly activate the "only tracking" mode.
             if(mState==OK)
@@ -1980,6 +1983,7 @@ void Tracking::Track()
                 // Local Mapping might have changed some MapPoints tracked in last frame
                 CheckReplacedInLastFrame();
 
+                // 参考关键帧定位
                 if((!mbVelocity && !pCurrentMap->isImuInitialized()) || mCurrentFrame.mnId<mnLastRelocFrameId+2)
                 {
                     Verbose::PrintMess("TRACK: Track with respect to the reference KF ", Verbose::VERBOSITY_DEBUG);
@@ -2013,6 +2017,7 @@ void Tracking::Track()
                     }
                 }
             }
+            // 跟丢： 启动IMU进行预测 / 
             else
             {
 
@@ -2071,6 +2076,7 @@ void Tracking::Track()
             }
 
         }
+        // 定位模式
         else
         {
             // Localization Mode: Local Mapping is deactivated (TODO Not available in inertial mode)
@@ -2157,11 +2163,15 @@ void Tracking::Track()
 #ifdef REGISTER_TIMES
         std::chrono::steady_clock::time_point time_StartLMTrack = std::chrono::steady_clock::now();
 #endif
+        /*  ************************************************
+        step4： 局部地图跟踪 (Track Local Map)
+        ****************************************************/
         // If we have an initial estimation of the camera pose and matching. Track the local map.
         if(!mbOnlyTracking)
         {
             if(bOK)
             {
+                // 局部地图上进行重投影，解算出当前帧的位置姿态
                 bOK = TrackLocalMap();
 
             }
@@ -2240,6 +2250,9 @@ void Tracking::Track()
         if(mCurrentFrame.isSet())
             mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
 
+        /*  ************************************************
+        step5： 更新与关键帧决策
+        ****************************************************/
         if(bOK || mState==RECENTLY_LOST)
         {
             // Update motion model
@@ -2285,6 +2298,8 @@ void Tracking::Track()
             // if(bNeedKF && bOK)
             if(bNeedKF && (bOK || (mInsertKFsLost && mState==RECENTLY_LOST &&
                                    (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD))))
+                
+                // 这里会执行后端的优化算法，甚至闭环检测等流程
                 CreateNewKeyFrame();
 
 #ifdef REGISTER_TIMES
@@ -2460,6 +2475,7 @@ void Tracking::StereoInitialization()
 
         //cout << "Active map: " << mpAtlas->GetCurrentMap()->GetId() << endl;
 
+        // 塞给后端
         mpLocalMapper->InsertKeyFrame(pKFini);
 
         mLastFrame = Frame(mCurrentFrame);
@@ -3369,7 +3385,7 @@ void Tracking::CreateNewKeyFrame()
         }
     }
 
-
+    // 将当前帧传入到后端中
     mpLocalMapper->InsertKeyFrame(pKF);
 
     mpLocalMapper->SetNotStop(false);

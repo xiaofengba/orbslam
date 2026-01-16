@@ -67,6 +67,9 @@ void LocalMapping::Run()
 
     while(1)
     {
+        /***********************************************
+        step1: 接收与预处理 (Inbox Processing)
+        *************************************************/
         // Tracking will see that Local Mapping is busy
         SetAcceptKeyFrames(false);
 
@@ -281,6 +284,7 @@ void LocalMapping::Run()
     SetFinish();
 }
 
+// 注意这里只是一个入口，多线程在处理这个buffer： LocalMapping::Run() 该函数的上面
 void LocalMapping::InsertKeyFrame(KeyFrame *pKF)
 {
     unique_lock<mutex> lock(mMutexNewKFs);

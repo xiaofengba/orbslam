@@ -1,0 +1,62 @@
+Configuring and building Thirdparty/DBoW2 ...
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found OpenCV: /usr (found suitable exact version "4.5.4") 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/workspaces/orbslam/ORB_SLAM3/Thirdparty/DBoW2/build
+[ 57%] Building CXX object CMakeFiles/DBoW2.dir/DBoW2/FORB.cpp.o
+[ 57%] Building CXX object CMakeFiles/DBoW2.dir/DUtils/Random.cpp.o
+[ 57%] Building CXX object CMakeFiles/DBoW2.dir/DBoW2/ScoringObject.cpp.o
+[ 57%] Building CXX object CMakeFiles/DBoW2.dir/DUtils/Timestamp.cpp.o
+[ 71%] Building CXX object CMakeFiles/DBoW2.dir/DBoW2/FeatureVector.cpp.o
+[ 85%] Building CXX object CMakeFiles/DBoW2.dir/DBoW2/BowVector.cpp.o
+[100%] Linking CXX shared library ../lib/libDBoW2.so
+[100%] Built target DBoW2
+Configuring and building Thirdparty/g2o ...
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- BUILD TYPE:Release
+-- Compiling on Unix
+-- Found OpenMP_C: -fopenmp (found version "4.5") 
+-- Found OpenMP_CXX: -fopenmp (found version "4.5") 
+-- Found OpenMP: TRUE (found version "4.5")  
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/workspaces/orbslam/ORB_SLAM3/Thirdparty/g2o/build
+[ 16%] Building CXX object CMakeFiles/g2o.dir/g2o/core/hyper_graph.cpp.o
+[ 16%] Building CXX object CMakeFiles/g2o.dir/g2o/types/types_seven_dof_expmap.cpp.o
+[ 16%] Building CXX object CMakeFiles/g2o.dir/g2o/types/types_sba.cpp.o
+[ 16%] Building CXX object CMakeFiles/g2o.dir/g2o/types/types_six_dof_expmap.cpp.o
+[ 16%] Building CXX object CMakeFiles/g2o.dir/g2o/core/marginal_covariance_cholesky.cpp.o
+[ 19%] Building CXX object CMakeFiles/g2o.dir/g2o/core/hyper_graph_action.cpp.o
+[ 22%] Building CXX object CMakeFiles/g2o.dir/g2o/core/matrix_structure.cpp.o
+[ 25%] Building CXX object CMakeFiles/g2o.dir/g2o/core/batch_stats.cpp.o
+[ 29%] Building CXX object CMakeFiles/g2o.dir/g2o/core/parameter.cpp.o
+[ 32%] Building CXX object CMakeFiles/g2o.dir/g2o/core/cache.cpp.o
+[ 35%] Building CXX object CMakeFiles/g2o.dir/g2o/core/optimizable_graph.cpp.o
+[ 38%] Building CXX object CMakeFiles/g2o.dir/g2o/core/solver.cpp.o
+[ 41%] Building CXX object CMakeFiles/g2o.dir/g2o/core/optimization_algorithm_factory.cpp.o
+[ 45%] Building CXX object CMakeFiles/g2o.dir/g2o/core/estimate_propagator.cpp.o
+[ 48%] Building CXX object CMakeFiles/g2o.dir/g2o/core/factory.cpp.o
+[ 51%] Building CXX object CMakeFiles/g2o.dir/g2o/core/sparse_optimizer.cpp.o
