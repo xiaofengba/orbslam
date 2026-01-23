@@ -39,6 +39,8 @@ find_package(pcl_ros REQUIRED)
 find_package(pcl_conversions REQUIRED)
 find_package(PCL REQUIRED COMPONENTS common)
 
+find_package(OpenCV 4.5.4 EXACT REQUIRED)
+
 # Update include_directories to include PCL
 include_directories(
   include

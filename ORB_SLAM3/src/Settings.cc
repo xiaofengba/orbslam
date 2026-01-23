@@ -144,6 +144,7 @@ namespace ORB_SLAM3 {
         readCamera1(fSettings);
         cout << "\t-Loaded camera 1" << endl;
 
+        // 如果是双目相机，可能存在需要矫正图像的操作
         //Read second camera if stereo (not rectified)
         if(sensor_ == System::STEREO || sensor_ == System::IMU_STEREO){
             readCamera2(fSettings);

@@ -158,10 +158,9 @@ stereo: /usr/lib/x86_64-linux-gnu/libusb-1.0.so
 stereo: /usr/lib/x86_64-linux-gnu/libOpenNI2.so
 stereo: /usr/lib/x86_64-linux-gnu/libusb-1.0.so
 stereo: /opt/ros/humble/lib/libcv_bridge.so
-stereo: /usr/local/lib/libopencv_imgcodecs.so.4.8.0
-stereo: /usr/local/lib/libopencv_imgproc.so.4.8.0
-stereo: /usr/local/lib/libopencv_core.so.4.8.0
-stereo: /usr/local/lib/libopencv_cudev.so.4.8.0
+stereo: /usr/lib/x86_64-linux-gnu/libopencv_imgcodecs.so.4.5.4d
+stereo: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.4.5.4d
+stereo: /usr/lib/x86_64-linux-gnu/libopencv_core.so.4.5.4d
 stereo: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_typesupport_fastrtps_c.so
 stereo: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_typesupport_fastrtps_cpp.so
 stereo: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_typesupport_introspection_c.so

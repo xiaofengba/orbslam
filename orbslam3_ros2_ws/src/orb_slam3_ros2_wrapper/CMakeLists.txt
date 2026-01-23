@@ -38,6 +38,8 @@ list(APPEND CMAKE_INSTALL_RPATH
 )
 
 # --- 2. 查找依赖 ---
+find_package(OpenCV 4.5.4 EXACT REQUIRED)
+
 find_package(ament_cmake_auto REQUIRED)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -56,6 +58,7 @@ find_package(PCL REQUIRED)
 find_package(pcl_ros REQUIRED)
 find_package(pcl_conversions REQUIRED)
 find_package(std_srvs REQUIRED)
+
 
 option(ORB_SLAM3_ROS2_WRAPPER_ENABLE_CUDA "Enable CUDA support if available" OFF)
 
@@ -148,9 +151,18 @@ if(ORB_SLAM3_ROS2_WRAPPER_ENABLE_CUDA)
   target_compile_definitions(stereo PRIVATE ORB_SLAM3_ROS2_WRAPPER_ENABLE_CUDA=1)
 endif()
 
+# Stereo-IMU
+add_executable(stereo_imu src/stereo-imu/stereo-imu-slam-node.cpp src/stereo-imu/stereo-imu.cpp)
+ament_target_dependencies(stereo_imu ${ros_dependencies})
+target_link_libraries(stereo_imu orb_slam3_ros2_wrapper_common ${PCL_LIBRARIES})
+if(ORB_SLAM3_ROS2_WRAPPER_ENABLE_CUDA)
+  set_target_properties(stereo_imu PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+  target_compile_definitions(stereo_imu PRIVATE ORB_SLAM3_ROS2_WRAPPER_ENABLE_CUDA=1)
+endif()
+
 # --- 6. 安装 ---
 # 注意：这里我们把库和可执行文件都安装到了 lib/${PROJECT_NAME} 下
-install(TARGETS orb_slam3_ros2_wrapper_common rgbd rgbd_imu mono_imu stereo
+install(TARGETS orb_slam3_ros2_wrapper_common rgbd rgbd_imu mono_imu stereo stereo_imu
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch params

@@ -134,6 +134,7 @@ public:
     // Input sensor
     int mSensor;
 
+    // 这里是最新传感器所构造的一个最新帧
     // Current Frame
     Frame mCurrentFrame;
     Frame mLastFrame;

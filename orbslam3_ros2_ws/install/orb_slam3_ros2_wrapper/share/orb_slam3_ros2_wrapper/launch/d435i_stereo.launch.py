@@ -21,7 +21,7 @@ def generate_launch_description():
     orb_wrapper_pkg = get_package_share_directory('orb_slam3_ros2_wrapper')
 #---------------------------------------------
 
-    # LAUNCH ARGS
+    # 参数配置： LAUNCH ARGS
     use_sim_time = LaunchConfiguration('use_sim_time')
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         name='use_sim_time',
@@ -33,6 +33,7 @@ def generate_launch_description():
         description='The namespace of the robot')
 #---------------------------------------------
 
+    # 启动的入口
     def all_nodes_launch(context, robot_namespace):
         params_file = LaunchConfiguration('params_file')
         vocabulary_file_path = "/home/ubuntu/workspaces/orbslam/ORB_SLAM3/Vocabulary/ORBvoc.txt"
@@ -60,6 +61,7 @@ def generate_launch_description():
             param_rewrites=param_substitutions,
             convert_types=True)
         
+        # 启动的核心节点： stereo
         orb_slam3_node = Node(
             package="orb_slam3_ros2_wrapper",
             executable="stereo",

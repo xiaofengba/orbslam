@@ -7,6 +7,9 @@
 
 #include <Eigen/Core>
 
+
+
+// 实际上ORBSLAM3的初始化是在 ORBSLAM3Interface 初始化的并绑定
 namespace ORB_SLAM3_Wrapper
 {
     using namespace WrapperTypeConversions;

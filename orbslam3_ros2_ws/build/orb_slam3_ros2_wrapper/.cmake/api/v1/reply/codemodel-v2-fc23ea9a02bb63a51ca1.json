@@ -1,0 +1,184 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-7b0d30bc707cbded36ee.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10
+					]
+				},
+				{
+					"build" : "gtest",
+					"jsonFile" : "directory-gtest-Release-a2408fe1a73b92c5e636.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "/opt/ros/humble/src/gtest_vendor",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "orb_slam3_ros2_wrapper",
+					"targetIndexes" : 
+					[
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "gtest",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "gtest::@0af4add9fe94340e763e",
+					"jsonFile" : "target-gtest-Release-794a0b17b404a84c057a.json",
+					"name" : "gtest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "gtest_main::@0af4add9fe94340e763e",
+					"jsonFile" : "target-gtest_main-Release-e7e6d644803ea6a54959.json",
+					"name" : "gtest_main",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mono_imu::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mono_imu-Release-e778403dab599d5ac79c.json",
+					"name" : "mono_imu",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "orb_slam3_ros2_wrapper_common::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-orb_slam3_ros2_wrapper_common-Release-7abf7657afb3b915c087.json",
+					"name" : "orb_slam3_ros2_wrapper_common",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "orb_slam3_ros2_wrapper_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-orb_slam3_ros2_wrapper_uninstall-Release-740ad5e10b58ce21219b.json",
+					"name" : "orb_slam3_ros2_wrapper_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rgbd::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rgbd-Release-f8bc9e68fb9de33f0c26.json",
+					"name" : "rgbd",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rgbd_imu::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rgbd_imu-Release-5549ff01ae48af368a0b.json",
+					"name" : "rgbd_imu",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "stereo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-stereo-Release-117cad94ae4d503c6b4c.json",
+					"name" : "stereo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "stereo_imu::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-stereo_imu-Release-00dc595ea8bcfea879c8.json",
+					"name" : "stereo_imu",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "typeconversionTests::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-typeconversionTests-Release-db12c7702b14c0a0adf1.json",
+					"name" : "typeconversionTests",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-e117d456a029a4398279.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper",
+		"source" : "/home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/src/orb_slam3_ros2_wrapper"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

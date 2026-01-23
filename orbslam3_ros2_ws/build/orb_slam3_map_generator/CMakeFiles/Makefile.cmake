@@ -1006,6 +1006,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/lib/x86_64-linux-gnu/cmake/fmt/fmt-config.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/fmt/fmt-targets-none.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/fmt/fmt-targets.cmake"
+  "/usr/lib/x86_64-linux-gnu/cmake/opencv4/OpenCVConfig-version.cmake"
+  "/usr/lib/x86_64-linux-gnu/cmake/opencv4/OpenCVConfig.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/orocos_kdl/orocos_kdl-config-version.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/orocos_kdl/orocos_kdl-config.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/pcl/Modules/FindEigen.cmake"

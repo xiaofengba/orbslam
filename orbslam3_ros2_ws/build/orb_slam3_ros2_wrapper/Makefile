@@ -263,6 +263,19 @@ stereo/fast:
 .PHONY : stereo/fast
 
 #=============================================================================
+# Target rules for targets named stereo_imu
+
+# Build rule for target.
+stereo_imu: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 stereo_imu
+.PHONY : stereo_imu
+
+# fast build rule for target.
+stereo_imu/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stereo_imu.dir/build.make CMakeFiles/stereo_imu.dir/build
+.PHONY : stereo_imu/fast
+
+#=============================================================================
 # Target rules for targets named typeconversionTests
 
 # Build rule for target.
@@ -493,6 +506,54 @@ src/slam_node_base.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/orb_slam3_ros2_wrapper_common.dir/build.make CMakeFiles/orb_slam3_ros2_wrapper_common.dir/src/slam_node_base.cpp.s
 .PHONY : src/slam_node_base.cpp.s
 
+src/stereo-imu/stereo-imu-slam-node.o: src/stereo-imu/stereo-imu-slam-node.cpp.o
+.PHONY : src/stereo-imu/stereo-imu-slam-node.o
+
+# target to build an object file
+src/stereo-imu/stereo-imu-slam-node.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stereo_imu.dir/build.make CMakeFiles/stereo_imu.dir/src/stereo-imu/stereo-imu-slam-node.cpp.o
+.PHONY : src/stereo-imu/stereo-imu-slam-node.cpp.o
+
+src/stereo-imu/stereo-imu-slam-node.i: src/stereo-imu/stereo-imu-slam-node.cpp.i
+.PHONY : src/stereo-imu/stereo-imu-slam-node.i
+
+# target to preprocess a source file
+src/stereo-imu/stereo-imu-slam-node.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stereo_imu.dir/build.make CMakeFiles/stereo_imu.dir/src/stereo-imu/stereo-imu-slam-node.cpp.i
+.PHONY : src/stereo-imu/stereo-imu-slam-node.cpp.i
+
+src/stereo-imu/stereo-imu-slam-node.s: src/stereo-imu/stereo-imu-slam-node.cpp.s
+.PHONY : src/stereo-imu/stereo-imu-slam-node.s
+
+# target to generate assembly for a file
+src/stereo-imu/stereo-imu-slam-node.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stereo_imu.dir/build.make CMakeFiles/stereo_imu.dir/src/stereo-imu/stereo-imu-slam-node.cpp.s
+.PHONY : src/stereo-imu/stereo-imu-slam-node.cpp.s
+
+src/stereo-imu/stereo-imu.o: src/stereo-imu/stereo-imu.cpp.o
+.PHONY : src/stereo-imu/stereo-imu.o
+
+# target to build an object file
+src/stereo-imu/stereo-imu.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stereo_imu.dir/build.make CMakeFiles/stereo_imu.dir/src/stereo-imu/stereo-imu.cpp.o
+.PHONY : src/stereo-imu/stereo-imu.cpp.o
+
+src/stereo-imu/stereo-imu.i: src/stereo-imu/stereo-imu.cpp.i
+.PHONY : src/stereo-imu/stereo-imu.i
+
+# target to preprocess a source file
+src/stereo-imu/stereo-imu.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stereo_imu.dir/build.make CMakeFiles/stereo_imu.dir/src/stereo-imu/stereo-imu.cpp.i
+.PHONY : src/stereo-imu/stereo-imu.cpp.i
+
+src/stereo-imu/stereo-imu.s: src/stereo-imu/stereo-imu.cpp.s
+.PHONY : src/stereo-imu/stereo-imu.s
+
+# target to generate assembly for a file
+src/stereo-imu/stereo-imu.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/stereo_imu.dir/build.make CMakeFiles/stereo_imu.dir/src/stereo-imu/stereo-imu.cpp.s
+.PHONY : src/stereo-imu/stereo-imu.cpp.s
+
 src/stereo/stereo-slam-node.o: src/stereo/stereo-slam-node.cpp.o
 .PHONY : src/stereo/stereo-slam-node.o
 
@@ -638,6 +699,7 @@ help:
 	@echo "... rgbd"
 	@echo "... rgbd_imu"
 	@echo "... stereo"
+	@echo "... stereo_imu"
 	@echo "... typeconversionTests"
 	@echo "... src/mono-imu/mono-imu-slam-node.o"
 	@echo "... src/mono-imu/mono-imu-slam-node.i"
@@ -663,6 +725,12 @@ help:
 	@echo "... src/slam_node_base.o"
 	@echo "... src/slam_node_base.i"
 	@echo "... src/slam_node_base.s"
+	@echo "... src/stereo-imu/stereo-imu-slam-node.o"
+	@echo "... src/stereo-imu/stereo-imu-slam-node.i"
+	@echo "... src/stereo-imu/stereo-imu-slam-node.s"
+	@echo "... src/stereo-imu/stereo-imu.o"
+	@echo "... src/stereo-imu/stereo-imu.i"
+	@echo "... src/stereo-imu/stereo-imu.s"
 	@echo "... src/stereo/stereo-slam-node.o"
 	@echo "... src/stereo/stereo-slam-node.i"
 	@echo "... src/stereo/stereo-slam-node.s"

@@ -13,6 +13,9 @@
 
 #include "orb_slam3_ros2_wrapper/slam_node_base.hpp"
 
+
+// 需要注意的是，它继承了 SlamNodeBase 这个东西，这个东西里面，负责ROS的相关
+// ORBSLAM3Interface ， 他管理了ORBSLAM3的接口
 namespace ORB_SLAM3_Wrapper
 {
     class StereoSlamNode : public SlamNodeBase

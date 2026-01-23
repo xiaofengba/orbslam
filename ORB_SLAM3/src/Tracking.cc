@@ -1511,7 +1511,7 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat 
     // 注意Frame的输入为双目、以及是否有mpCamera2就可以区别出来了
     /*'''
     1. 执行特征提取
-    2. 矫正特征点(输入是矫正的， 除了鱼眼相机一般不会执行这一步骤)
+    2. 矫正特征点(输入是矫正的， 除了鱼眼相机一般不会执行矫正这一步骤)
     3. 执行双目特征匹配
     4. 双目特征匹配特征的深度值
     '''
@@ -1539,6 +1539,7 @@ Sophus::SE3f Tracking::GrabImageStereo(const cv::Mat &imRectLeft, const cv::Mat 
     vdStereoMatch_ms.push_back(mCurrentFrame.mTimeStereoMatch);
 #endif
 
+    // 主要上面已经对mCurrentFrame完成了构造，也就是有图像、IMU等信息
     //cout << "Tracking start" << endl;
     Track();
     //cout << "Tracking end" << endl;
@@ -1823,6 +1824,7 @@ void Tracking::ResetFrameIMU()
 
 void Tracking::Track()
 {
+    // 注意在上面已经完成了对成员变量 mCurrentFrame 的构造和刷新
 
     /*  ************************************************
     step1： 数据检查
@@ -1835,6 +1837,7 @@ void Tracking::Track()
         mbStep = false;
     }
 
+    // 检查是否IMU有问题
     if(mpLocalMapper->mbBadImu)
     {
         cout << "TRACK: Reset map because local mapper set the bad imu flag " << endl;
@@ -1842,14 +1845,17 @@ void Tracking::Track()
         return;
     }
 
+    // 检查当前帧是否有对应的地图集，然后获取当前帧的地图指针
     Map* pCurrentMap = mpAtlas->GetCurrentMap();
     if(!pCurrentMap)
     {
         cout << "ERROR: There is not an active map in the atlas" << endl;
     }
 
+    // 检查图像帧时间、图像帧的时间是否跳跃、IMU是否初始化
     if(mState!=NO_IMAGES_YET)
     {
+        // 图像的时间戳还倒退了？
         if(mLastFrame.mTimeStamp>mCurrentFrame.mTimeStamp)
         {
             cerr << "ERROR: Frame with a timestamp older than previous frame detected!" << endl;
@@ -1858,6 +1864,7 @@ void Tracking::Track()
             CreateMapInAtlas();
             return;
         }
+        // 图像时间戳发生跳跃
         else if(mCurrentFrame.mTimeStamp>mLastFrame.mTimeStamp+1.0)
         {
             // cout << mCurrentFrame.mTimeStamp << ", " << mLastFrame.mTimeStamp << endl;
@@ -1865,6 +1872,7 @@ void Tracking::Track()
             if(mpAtlas->isInertial())
             {
 
+                // IMU已经初始化，但是时间戳跳跃
                 if(mpAtlas->isImuInitialized())
                 {
                     cout << "Timestamp jump detected. State set to LOST. Reseting IMU integration..." << endl;
@@ -1877,6 +1885,7 @@ void Tracking::Track()
                         CreateMapInAtlas();
                     }
                 }
+                // 在IMU未初始化之前，时间戳跳跃
                 else
                 {
                     cout << "Timestamp jump detected, before IMU initialization. Reseting..." << endl;
@@ -1890,7 +1899,7 @@ void Tracking::Track()
     /***************************************************
     step2： IMU数据处理
     ****************************************************/
-    // 如果有IMU参数，那么当前帧的IMU的bias应当和上一帧的bias相当
+    // 如果有IMU参数，那么当前帧的IMU的bias应当和上一帧的bias相当，不应发生大跳跃
     if ((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) && mpLastKeyFrame)
         mCurrentFrame.SetNewBias(mpLastKeyFrame->GetImuBias());
 
@@ -1918,6 +1927,7 @@ void Tracking::Track()
     }
     mbCreatedMap = false;
 
+    // 获取当前帧所在的地图（上面获取的），然后锁住该地图
     // Get Map Mutex -> Map cannot be changed
     unique_lock<mutex> lock(pCurrentMap->mMutexMapUpdate);
 
@@ -1932,7 +1942,7 @@ void Tracking::Track()
     }
 
     /***************************************************
-    step3： 系统初始化
+    step3： 检查并执行系统初始化
     ****************************************************/
     if(mState==NOT_INITIALIZED)
     {
@@ -1959,7 +1969,7 @@ void Tracking::Track()
         }
     }
     /***************************************************
-    step4： 位姿预测
+    step4： 系统已经初始化的情况下，进行位姿预测，类似粗定位
     ****************************************************/
     else
     {
@@ -1983,12 +1993,21 @@ void Tracking::Track()
                 // Local Mapping might have changed some MapPoints tracked in last frame
                 CheckReplacedInLastFrame();
 
-                // 参考关键帧定位
+
+                /* 注意函数 TrackReferenceKeyFrame， 它基于上一帧选出来的参考关键帧作为参考帧，这里更新了mCurrentFrame的：
+                        预测位姿 mTcw
+                        与参考帧的匹配结果 mvpMapPoints、
+                        当前图像的词袋向量 mBowVec
+                        相对参考帧的位姿的成功的标志 
+                */
+                //  此时的 mpReferenceKF 是**上一帧图像（Last Frame）**在做完所有跟踪工作后，评选出来的“关系最铁的大哥”。
+                // 参考关键帧定位，参考关键帧是用词袋确认
                 if((!mbVelocity && !pCurrentMap->isImuInitialized()) || mCurrentFrame.mnId<mnLastRelocFrameId+2)
                 {
                     Verbose::PrintMess("TRACK: Track with respect to the reference KF ", Verbose::VERBOSITY_DEBUG);
                     bOK = TrackReferenceKeyFrame();
                 }
+                // 先IMU预测再参考关键帧
                 else
                 {
                     Verbose::PrintMess("TRACK: Track with motion model", Verbose::VERBOSITY_DEBUG);
@@ -2017,10 +2036,10 @@ void Tracking::Track()
                     }
                 }
             }
-            // 跟丢： 启动IMU进行预测 / 
+            // 跟丢： 启动IMU进行预测
             else
             {
-
+                // 最近才丢失的
                 if (mState == RECENTLY_LOST)
                 {
                     Verbose::PrintMess("Lost for a short time", Verbose::VERBOSITY_NORMAL);
@@ -2040,6 +2059,7 @@ void Tracking::Track()
                             bOK=false;
                         }
                     }
+                    // 丢失有一会会
                     else
                     {
                         // Relocalization
@@ -2054,6 +2074,7 @@ void Tracking::Track()
                         }
                     }
                 }
+                // 完全丢失
                 else if (mState == LOST)
                 {
 
@@ -2164,8 +2185,10 @@ void Tracking::Track()
         std::chrono::steady_clock::time_point time_StartLMTrack = std::chrono::steady_clock::now();
 #endif
         /*  ************************************************
-        step4： 局部地图跟踪 (Track Local Map)
+        step4： 局部地图跟踪 (Track Local Map)， 精细定位
         ****************************************************/
+        // 上面已经已经根据参考帧或者IMU得到了当前帧的一些预测
+        // 在局部地图上进行跟踪, 这里覆盖掉了 mCurrentFrame 帧的位置姿态信息
         // If we have an initial estimation of the camera pose and matching. Track the local map.
         if(!mbOnlyTracking)
         {
@@ -2186,6 +2209,7 @@ void Tracking::Track()
             if(bOK && !mbVO)
                 bOK = TrackLocalMap();
         }
+
 
         if(bOK)
             mState = OK;
@@ -2211,6 +2235,9 @@ void Tracking::Track()
             //}
         }
 
+        /*  当系统刚从“跟丢”的状态中找回位置（重定位）后，旧的 IMU 状态（速度、偏置等）可能与新的视觉位置不匹配。
+            这段代码负责在重定位后的一段时间内，把每一帧的图像和 IMU 数据完整地“备份”下来，以便稍后用这些数据重新校准（Reset）IMU，使其与新的视觉轨迹对齐。
+        */
         // Save frame if recent relocalization, since they are used for IMU reset (as we are making copy, it shluld be once mCurrFrame is completely modified)
         if((mCurrentFrame.mnId<(mnLastRelocFrameId+mnFramesToResetIMU)) && (mCurrentFrame.mnId > mnFramesToResetIMU) &&
            (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) && pCurrentMap->isImuInitialized())
@@ -2224,6 +2251,7 @@ void Tracking::Track()
             pF->mpImuPreintegratedFrame = new IMU::Preintegrated(mCurrentFrame.mpImuPreintegratedFrame);
         }
 
+        // 到了重定位后的修正时间点，就执行 IMU 重置；如果过了不稳定期，就正常更新 Bias
         if(pCurrentMap->isImuInitialized())
         {
             if(bOK)
@@ -2250,11 +2278,13 @@ void Tracking::Track()
         if(mCurrentFrame.isSet())
             mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
 
-        /*  ************************************************
+        /***************************************************
         step5： 更新与关键帧决策
         ****************************************************/
+        // 注意这里 bok 
         if(bOK || mState==RECENTLY_LOST)
         {
+            // 更新匀速模型，算这是为下一帧的跟踪做准备。ORB-SLAM 假设相机短时间内是匀速运动的。
             // Update motion model
             if(mLastFrame.isSet() && mCurrentFrame.isSet())
             {
@@ -2266,9 +2296,11 @@ void Tracking::Track()
                 mbVelocity = false;
             }
 
+            // UI更新
             if(mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD)
                 mpMapDrawer->SetCurrentCameraPose(mCurrentFrame.GetPose());
 
+            // 清理无效的视觉里程计匹配：有些点是仅用于 VO（视觉里程计）的临时点，没有被录入正式地图。这一步把这些“黑户”清理掉，确保传给后端的都是有据可查的地图点。
             // Clean VO matches
             for(int i=0; i<mCurrentFrame.N; i++)
             {
@@ -2281,6 +2313,7 @@ void Tracking::Track()
                     }
             }
 
+            // 删除临时地图点： 彻底销毁这一帧产生的临时点对象，防止内存泄漏。
             // Delete temporal MapPoints
             for(list<MapPoint*>::iterator lit = mlpTemporalPoints.begin(), lend =  mlpTemporalPoints.end(); lit!=lend; lit++)
             {
@@ -2292,15 +2325,20 @@ void Tracking::Track()
 #ifdef REGISTER_TIMES
             std::chrono::steady_clock::time_point time_StartNewKF = std::chrono::steady_clock::now();
 #endif
-            bool bNeedKF = NeedNewKeyFrame();
 
+            // 关键帧决策与创建
+            bool bNeedKF = NeedNewKeyFrame();   // // 这里的判断逻辑很复杂（看时间间隔、共视点比例等）
+
+
+            // 除了判断，需要插且处于IMU“刚刚丢失”状态（靠IMU强行续命时，为了维持地图连续性，有时也允许插帧）
             // Check if we need to insert a new keyframe
             // if(bNeedKF && bOK)
             if(bNeedKF && (bOK || (mInsertKFsLost && mState==RECENTLY_LOST &&
                                    (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD))))
                 
                 // 这里会执行后端的优化算法，甚至闭环检测等流程
-                CreateNewKeyFrame();
+                // 创建关键帧后，会向 LocalMapping 插入创建的关键帧，用于后端处理
+                CreateNewKeyFrame();                    
 
 #ifdef REGISTER_TIMES
             std::chrono::steady_clock::time_point time_EndNewKF = std::chrono::steady_clock::now();
@@ -2369,7 +2407,6 @@ void Tracking::Track()
             mlFrameTimes.push_back(mlFrameTimes.back());
             mlbLost.push_back(mState==LOST);
         }
-
     }
 
 #ifdef REGISTER_LOOP
@@ -3000,6 +3037,10 @@ bool Tracking::TrackWithMotionModel()
         return nmatchesMap>=10;
 }
 
+/*
+在已知当前帧“粗略位姿”的前提下，通过将“局部地图”中的所有点投影到当前帧进行搜索匹配，
+进行高精度的位姿优化，并根据最终匹配上的点数决定这一帧是否“跟踪成功”。
+*/
 bool Tracking::TrackLocalMap()
 {
 
@@ -3007,6 +3048,7 @@ bool Tracking::TrackLocalMap()
     // We retrieve the local map and try to find matches to points in the local map.
     mTrackedFr++;
 
+    // 通过当前帧的粗定位，在地图集上更新局部地图
     UpdateLocalMap();
     SearchLocalPoints();
 
@@ -3020,24 +3062,36 @@ bool Tracking::TrackLocalMap()
                 aux2++;
         }
 
+    /* 分有无IMU两种情况进行优化
+        PoseOptimization: 标准的 Bundle Adjustment（仅优化当前帧 Pose），最小化重投影误差。
+        PoseInertialOptimization: 联合优化。误差函数 = 重投影误差 + IMU 预积分误差。这是 ORB-SLAM3 相比 ORB-SLAM2 最大的改进之一，利用 IMU 约束位姿，防止视觉漂移。
+    */
     int inliers;
+    // 1. 如果 IMU 还没初始化（或者没 IMU）：纯视觉优化
     if (!mpAtlas->isImuInitialized())
         Optimizer::PoseOptimization(&mCurrentFrame);
     else
     {
+        // 2. 如果刚发生过重定位（Relocalization）不久：
+        // 此时信任视觉多一点，强制使用纯视觉优化来稳定位姿
         if(mCurrentFrame.mnId<=mnLastRelocFrameId+mnFramesToResetIMU)
         {
             Verbose::PrintMess("TLM: PoseOptimization ", Verbose::VERBOSITY_DEBUG);
             Optimizer::PoseOptimization(&mCurrentFrame);
         }
+
         else
         {
+            // 3. IMU 正常工作且稳定：使用【视觉-惯性联合优化】
+            // 这里的 if(!mbMapUpdated) 逻辑比较晦涩，通常是为了效率。
+            // 如果地图没变， 我们基于“上一普通帧”的信息进行惯性优化
             // if(!mbMapUpdated && mState == OK) //  && (mnMatchesInliers>30))
             if(!mbMapUpdated) //  && (mnMatchesInliers>30))
             {
                 Verbose::PrintMess("TLM: PoseInertialOptimizationLastFrame ", Verbose::VERBOSITY_DEBUG);
                 inliers = Optimizer::PoseInertialOptimizationLastFrame(&mCurrentFrame); // , !mpLastKeyFrame->GetMap()->GetIniertialBA1());
             }
+            // 如果地图变了（比如插入了关键帧）， 我们基于“上一关键帧”的信息进行优化
             else
             {
                 Verbose::PrintMess("TLM: PoseInertialOptimizationLastKeyFrame ", Verbose::VERBOSITY_DEBUG);
@@ -3115,6 +3169,15 @@ bool Tracking::TrackLocalMap()
     }
 }
 
+/*
+ORB-SLAM3 选关键帧的策略
+    IMU 优先：如果 IMU 没初始化，或者 IMU 模式下时间间隔太长（0.5s），强制插帧。
+    视觉变化驱动：主要看 c2 条件。当当前帧看到的特征点比参考关键帧少（说明视角变了、走远了或环境变了），就想插帧。
+    后端负载均衡：
+        如果后端（Local Mapping）很空闲 (c1b)，稍微有一点变化就插帧，让地图更密。
+        如果后端很忙，尽量不插帧，除非到了不得不插的情况（如 c1a 超过最大帧数间隔），并且会根据传感器类型决定是否丢弃该帧以保护后端不崩溃。
+    双目/RGBD 特性：特别关注“近点”的数量，保证近处（高精度区域）的地图构建。
+*/
 bool Tracking::NeedNewKeyFrame()
 {
     if((mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD) && !mpAtlas->GetCurrentMap()->isImuInitialized())
@@ -3267,23 +3330,36 @@ bool Tracking::NeedNewKeyFrame()
         return false;
 }
 
+/*
+核心任务是将当前帧（Frame）“升级”为关键帧（KeyFrame），
+并将其交给后端（Local Mapping）处理
+*/
 void Tracking::CreateNewKeyFrame()
 {
+    // 1. 如果后端正在初始化且 IMU 还没好，为了防止破坏初始化过程，直接跳过
     if(mpLocalMapper->IsInitializing() && !mpAtlas->isImuInitialized())
         return;
 
+    // 2. 线程锁：请求后端（LocalMapper）不要暂停（例如不要在这个时候去处理回环检测导致的暂停）
+    // 如果后端已经暂停或正在请求暂停，则不允许插入关键帧，直接返回
     if(!mpLocalMapper->SetNotStop(true))
         return;
 
+    // 基于当前帧创建新的关键帧对象
     KeyFrame* pKF = new KeyFrame(mCurrentFrame,mpAtlas->GetCurrentMap(),mpKeyFrameDB);
 
+    // 标记 IMU 状态
     if(mpAtlas->isImuInitialized()) //  || mpLocalMapper->IsInitializing())
         pKF->bImu = true;
 
+    // 设置当前关键帧时刻的 IMU 偏置 (Bias)
     pKF->SetNewBias(mCurrentFrame.mImuBias);
+
+    // 更新 Tracking 线程的参考关键帧指针
     mpReferenceKF = pKF;
     mCurrentFrame.mpReferenceKF = pKF;
 
+    // 维护关键帧的时间连续性: ORB-SLAM3 使用双向链表来维护关键帧之间的时间顺序，这对于 IMU 预积分至关重要。
     if(mpLastKeyFrame)
     {
         pKF->mPrevKF = mpLastKeyFrame;
@@ -3292,12 +3368,14 @@ void Tracking::CreateNewKeyFrame()
     else
         Verbose::PrintMess("No last KF in KF creation!!", Verbose::VERBOSITY_NORMAL);
 
+    // 重置 IMU 预积分器: 这是惯性系统（VIO）的关键步骤。 IMU 预积分是基于两个关键帧之间的 IMU 数据计算的。一旦插入了新的关键帧 pKF，旧的预积分段（mpLastKeyFrame -> pKF）就结束了。必须创建一个新的预积分器，从 pKF 开始积累数据，直到下一个关键帧出现。
     // Reset preintegration from last KF (Create new object)
     if (mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD)
     {
         mpImuPreintegratedFromLastKF = new IMU::Preintegrated(pKF->GetImuBias(),pKF->mImuCalib);
     }
 
+    // 生成新地图点: 仅 Stereo/RGBD 模式,双目/RGBD（Stereo/RGBD）因为有深度信息，可以直接将特征点反投影为 3D 地图点
     if(mSensor!=System::MONOCULAR && mSensor != System::IMU_MONOCULAR) // TODO check if incluide imu_stereo
     {
         mCurrentFrame.UpdatePoseMatrices();
@@ -3385,11 +3463,13 @@ void Tracking::CreateNewKeyFrame()
         }
     }
 
-    // 将当前帧传入到后端中
+    // 1. 将关键帧插入 LocalMapping 的处理队列
     mpLocalMapper->InsertKeyFrame(pKF);
 
+    // 2. 释放线程锁，允许后端在处理完这个关键帧后暂停
     mpLocalMapper->SetNotStop(false);
 
+    // 3. 更新 Tracking 线程的状态变量
     mnLastKeyFrameId = mCurrentFrame.mnId;
     mpLastKeyFrame = pKF;
 }

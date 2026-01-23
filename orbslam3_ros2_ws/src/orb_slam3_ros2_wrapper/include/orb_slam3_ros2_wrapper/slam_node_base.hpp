@@ -55,6 +55,7 @@ namespace ORB_SLAM3_Wrapper
         // Called by derived sensor nodes when tracking succeeded for a frame.
         void onTracked(const std_msgs::msg::Header &stamp_source_header);
 
+        // 注意这个函数，它会调用它来返回一个指针，然后这个指针有ORBSLAM3的指针
         std::shared_ptr<ORBSLAM3Interface> interface() { return interface_; }
 
     private:

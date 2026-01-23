@@ -223,10 +223,9 @@ liborb_slam3_ros2_wrapper_common.so: /usr/lib/x86_64-linux-gnu/libusb-1.0.so
 liborb_slam3_ros2_wrapper_common.so: /usr/lib/x86_64-linux-gnu/libOpenNI2.so
 liborb_slam3_ros2_wrapper_common.so: /usr/lib/x86_64-linux-gnu/libusb-1.0.so
 liborb_slam3_ros2_wrapper_common.so: /usr/lib/x86_64-linux-gnu/libflann_cpp.so
-liborb_slam3_ros2_wrapper_common.so: /usr/local/lib/libopencv_imgcodecs.so.4.8.0
-liborb_slam3_ros2_wrapper_common.so: /usr/local/lib/libopencv_imgproc.so.4.8.0
-liborb_slam3_ros2_wrapper_common.so: /usr/local/lib/libopencv_core.so.4.8.0
-liborb_slam3_ros2_wrapper_common.so: /usr/local/lib/libopencv_cudev.so.4.8.0
+liborb_slam3_ros2_wrapper_common.so: /usr/lib/x86_64-linux-gnu/libopencv_imgcodecs.so.4.5.4d
+liborb_slam3_ros2_wrapper_common.so: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.4.5.4d
+liborb_slam3_ros2_wrapper_common.so: /usr/lib/x86_64-linux-gnu/libopencv_core.so.4.5.4d
 liborb_slam3_ros2_wrapper_common.so: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_typesupport_c.so
 liborb_slam3_ros2_wrapper_common.so: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_generator_c.so
 liborb_slam3_ros2_wrapper_common.so: /opt/ros/humble/lib/libstatic_transform_broadcaster_node.so

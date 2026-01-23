@@ -96,6 +96,16 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/orb_slam3_ros2_wrapper" TYPE EXECUTABLE FILES "/home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper/stereo_imu")
+  if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/orb_slam3_ros2_wrapper/stereo_imu" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/orb_slam3_ros2_wrapper/stereo_imu")
+    if(CMAKE_INSTALL_DO_STRIP)
+      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/orb_slam3_ros2_wrapper/stereo_imu")
+    endif()
+  endif()
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/orb_slam3_ros2_wrapper" TYPE DIRECTORY FILES
     "/home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/src/orb_slam3_ros2_wrapper/launch"
     "/home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/src/orb_slam3_ros2_wrapper/params"

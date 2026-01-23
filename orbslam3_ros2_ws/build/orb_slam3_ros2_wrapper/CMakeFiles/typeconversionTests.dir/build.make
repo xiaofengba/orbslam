@@ -184,10 +184,9 @@ typeconversionTests: /usr/lib/x86_64-linux-gnu/libflann_cpp.so
 typeconversionTests: /usr/lib/libOpenNI.so
 typeconversionTests: /usr/lib/x86_64-linux-gnu/libOpenNI2.so
 typeconversionTests: /usr/lib/x86_64-linux-gnu/libpcl_common.so
-typeconversionTests: /usr/local/lib/libopencv_imgcodecs.so.4.8.0
-typeconversionTests: /usr/local/lib/libopencv_imgproc.so.4.8.0
-typeconversionTests: /usr/local/lib/libopencv_core.so.4.8.0
-typeconversionTests: /usr/local/lib/libopencv_cudev.so.4.8.0
+typeconversionTests: /usr/lib/x86_64-linux-gnu/libopencv_imgcodecs.so.4.5.4d
+typeconversionTests: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.4.5.4d
+typeconversionTests: /usr/lib/x86_64-linux-gnu/libopencv_core.so.4.5.4d
 typeconversionTests: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_typesupport_c.so
 typeconversionTests: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_generator_c.so
 typeconversionTests: /opt/ros/humble/lib/libstatic_transform_broadcaster_node.so

@@ -61,6 +61,12 @@ void LocalMapping::SetTracker(Tracking *pTracker)
     mpTracker=pTracker;
 }
 
+
+
+/*
+    这个线程的核心职责是维护局部地图的一致性，处理来自 Tracking 线程的新关键帧（KeyFrame），
+    生成新的地图点（MapPoint），并执行局部优化的核心算法（Local Bundle Adjustment）。
+*/
 void LocalMapping::Run()
 {
     mbFinished = false;
@@ -70,9 +76,12 @@ void LocalMapping::Run()
         /***********************************************
         step1: 接收与预处理 (Inbox Processing)
         *************************************************/
+        // SetAcceptKeyFrames(false): 告诉 Tracking 线程“我现在很忙”(也就是输入)，这时 Tracking 可能会丢弃一些非关键帧，或者暂停发送，起到流量控制的作用。
+        // 注意后面会配合使用 SetAcceptKeyFrames(true)
         // Tracking will see that Local Mapping is busy
         SetAcceptKeyFrames(false);
 
+        // 检查队列中是否有数据， 注意这个if很大，因此可以说RUN函数需要依靠这个局部判断
         // Check if there are keyframes in the queue
         if(CheckNewKeyFrames() && !mbBadImu)
         {
@@ -82,6 +91,7 @@ void LocalMapping::Run()
 
             std::chrono::steady_clock::time_point time_StartProcessKF = std::chrono::steady_clock::now();
 #endif
+            // 该函数的主要功能：将新关键帧整合到当前的地图中，更新关键帧与地图点（MapPoint）之间的关联，并维护共视关系图。
             // BoW conversion and insertion in Map
             ProcessNewKeyFrame();
 #ifdef REGISTER_TIMES
@@ -90,7 +100,7 @@ void LocalMapping::Run()
             double timeProcessKF = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_EndProcessKF - time_StartProcessKF).count();
             vdKFInsert_ms.push_back(timeProcessKF);
 #endif
-
+            // 对于最近加入地图的地图点进行考核， 剔除劣质地图点
             // Check recent MapPoints
             MapPointCulling();
 #ifdef REGISTER_TIMES
@@ -99,14 +109,19 @@ void LocalMapping::Run()
             double timeMPCulling = std::chrono::duration_cast<std::chrono::duration<double,std::milli> >(time_EndMPCulling - time_EndProcessKF).count();
             vdMPCulling_ms.push_back(timeMPCulling);
 #endif
-
+            // 利用当前关键帧（Current KeyFrame）与相邻关键帧（Neighbor KeyFrames），通过三角化（Triangulation）恢复出新的 3D 地图点
             // Triangulate new MapPoints
             CreateNewMapPoints();
 
             mbAbortBA = false;
 
+            /***********************************************
+            step2: 如果队列里没有积压的新关键帧（说明我不忙），我就去做点精细活
+            *************************************************/
+            // 判断是否新关键帧队列为空，这是一个非常重要的负载均衡策略。只有当关键帧队列为空（说明系统当前处理得过来，不拥堵）时，才执行这一步。
             if(!CheckNewKeyFrames())
             {
+                // 融合重复点： 简单来说，之前的步骤（ProcessNewKeyFrame 和 CreateNewMapPoints）建立了新关键帧和新地图点的初步关系。而 SearchInNeighbors 则是为了**“查漏补缺”和“去重”**：
                 // Find more matches in neighbor keyframes and fuse point duplications
                 SearchInNeighbors();
             }
@@ -124,11 +139,18 @@ void LocalMapping::Run()
             int num_MPs_BA = 0;
             int num_edges_BA = 0;
 
+            /***********************************************
+            step3: 局部优化BA， 分为VINS 和 纯视觉
+            ************************************************/
+            // 
             if(!CheckNewKeyFrames() && !stopRequested())
             {
+                // 队列为空且未请求停止，且地图中至少有2个关键帧。
                 if(mpAtlas->KeyFramesInMap()>2)
                 {
 
+                    // IMU 模式
+                    // IMU 模式下的特殊逻辑 (mbInertial)； 检查IMU的运动激励，然后执行BA
                     if(mbInertial && mpCurrentKeyFrame->GetMap()->isImuInitialized())
                     {
                         float dist = (mpCurrentKeyFrame->mPrevKF->GetCameraCenter() - mpCurrentKeyFrame->GetCameraCenter()).norm() +
@@ -152,12 +174,12 @@ void LocalMapping::Run()
                         Optimizer::LocalInertialBA(mpCurrentKeyFrame, &mbAbortBA, mpCurrentKeyFrame->GetMap(),num_FixedKF_BA,num_OptKF_BA,num_MPs_BA,num_edges_BA, bLarge, !mpCurrentKeyFrame->GetMap()->GetIniertialBA2());
                         b_doneLBA = true;
                     }
+                    // 纯视觉模式
                     else
                     {
                         Optimizer::LocalBundleAdjustment(mpCurrentKeyFrame,&mbAbortBA, mpCurrentKeyFrame->GetMap(),num_FixedKF_BA,num_OptKF_BA,num_MPs_BA,num_edges_BA);
                         b_doneLBA = true;
                     }
-
                 }
 #ifdef REGISTER_TIMES
                 std::chrono::steady_clock::time_point time_EndLBA = std::chrono::steady_clock::now();
@@ -179,7 +201,9 @@ void LocalMapping::Run()
                 }
 
 #endif
-
+                /***********************************************
+                step4: IMU 初始化与精修 (IMU Initialization & Refinement)
+                *************************************************/
                 // Initialize IMU here
                 if(!mpCurrentKeyFrame->GetMap()->isImuInitialized() && mbInertial)
                 {
@@ -250,6 +274,8 @@ void LocalMapping::Run()
             vdKFCullingSync_ms.push_back(timeKFCulling_ms);
 #endif
 
+            // 发送给回环检测： 将处理好且优化过的关键帧发送给 LoopClosing 线程，用于检测回环。
+            // 然后回环线程中不断检查新来的关键帧，判断是否发生了“回环（Loop Closure）”或者“地图合并（Map Merge）”，并执行相应的纠正或融合Full BA操作。
             if(mpLoopCloser) mpLoopCloser->InsertKeyFrame(mpCurrentKeyFrame);
 
 #ifdef REGISTER_TIMES
@@ -299,20 +325,31 @@ bool LocalMapping::CheckNewKeyFrames()
     return(!mlNewKeyFrames.empty());
 }
 
+
+/*
+该函数的主要功能：将新关键帧整合到当前的地图中，更新关键帧与地图点（MapPoint）之间的关联，并维护共视关系图。
+*/
 void LocalMapping::ProcessNewKeyFrame()
 {
+
+    // 1. 获取新关键帧 (Retrieve New KeyFrame)， 初始化变量 mpCurrentKeyFrame
     {
         unique_lock<mutex> lock(mMutexNewKFs);
         mpCurrentKeyFrame = mlNewKeyFrames.front();
         mlNewKeyFrames.pop_front();
     }
 
+    // 所有特征点的描述子构成的 embedding： 调用 DBoW2 库的方法，计算当前关键帧的词袋向量（BoW Vector）和特征向量（Feature Vector）。
     // Compute Bags of Words structures
     mpCurrentKeyFrame->ComputeBoW();
 
+    // 获取当前关键帧观测到的所有地图点，并遍历它们。这里是当前关键帧的特征点在局部地图中的匹配对
     // Associate MapPoints to the new keyframe and update normal and descriptor
     const vector<MapPoint*> vpMapPointMatches = mpCurrentKeyFrame->GetMapPointMatches();
 
+    /*
+    遍历这些匹配对，
+    */
     for(size_t i=0; i<vpMapPointMatches.size(); i++)
     {
         MapPoint* pMP = vpMapPointMatches[i];
@@ -320,23 +357,35 @@ void LocalMapping::ProcessNewKeyFrame()
         {
             if(!pMP->isBad())
             {
+                // 这是一个已存在的地图点（由之前的关键帧创建），现在被新关键帧再次观测到了。
                 if(!pMP->IsInKeyFrame(mpCurrentKeyFrame))
                 {
+                    // 在地图点中添加对该关键帧的观测记录
                     pMP->AddObservation(mpCurrentKeyFrame, i);
+                    // 更新地图点的平均观测方向（Normal）和深度范围。这对后续的投影匹配和剔除错误点至关重要。
                     pMP->UpdateNormalAndDepth();
+                    // 从所有观测到该点的关键帧中，选择一个距离中值最近的描述子作为该地图点的“最佳描述子”，提高匹配鲁棒性。
                     pMP->ComputeDistinctiveDescriptors();
                 }
+                // 这意味着这些点是刚刚由 Tracking 线程通过双目或 RGB-D 直接生成的，并且已经绑定了该关键帧。
                 else // this can only happen for new stereo points inserted by the Tracking
                 {
+                    // 将这些新点放入“最近添加列表”。LocalMapping 后续会有专门的 MapPointCulling() 函数来检查这些新点的质量，如果它们在接下来的几帧内表现不佳（如无法被再次观测），将会被剔除。
                     mlpRecentAddedMapPoints.push_back(pMP);
                 }
             }
         }
     }
 
+    // 更新共视关系图 (Update Covisibility Graph)： 
+    // 根据共视地图点的数量，建立新关键帧与其他关键帧的连接。如果两个关键帧观测到的相同地图点数量超过阈值（通常是15个），则它们之间存在一条边，边的权重是共视点的数量。
+    // 这构建了局部建图（Local Bundle Adjustment）的基础。优化时只优化共视关系强的关键帧。
     // Update links in the Covisibility Graph
     mpCurrentKeyFrame->UpdateConnections();
 
+    // 插入地图 (Insert into Map)
+    // 将处理完毕的关键帧正式加入到 mpAtlas（在 ORB-SLAM2 中是 mpMap）。
+    // 更新全局地图结构，使其可以被回环检测线程或其他模块访问。
     // Insert Keyframe in Map
     mpAtlas->AddKeyFrame(mpCurrentKeyFrame);
 }
@@ -347,39 +396,52 @@ void LocalMapping::EmptyQueue()
         ProcessNewKeyFrame();
 }
 
+/*
+    对于新加入地图的地图点的优胜劣汰, 以及试用期考核机制：
+        这个函数会对列表中的每个点进行三轮筛选。只有通过了这些筛选的点，才能从“观察名单”中毕业，成为真正的、稳定的地图点。
+        当新的地图点（MapPoint）刚刚被创建（通过三角化或双目匹配）时，它们通常包含大量噪声或错误匹配。为了保证地图质量，系统不会立刻信任这些点，而是将它们放入一个“观察名单”（mlpRecentAddedMapPoints）。本函数会对这个名单中的点进行“体检”，剔除坏点，保留好点。
+*/
 void LocalMapping::MapPointCulling()
 {
     // Check Recent Added MapPoints
     list<MapPoint*>::iterator lit = mlpRecentAddedMapPoints.begin();
     const unsigned long int nCurrentKFid = mpCurrentKeyFrame->mnId;
 
+    // 1. 阈值设定 (Threshold Setup)： 设定判断地图点是否稳健的观测数量阈值；
     int nThObs;
     if(mbMonocular)
+        // 单目 (Monocular)：初始三角化较难，阈值设低一点（2帧观测），避免误杀。
         nThObs = 2;
     else
+        // 双目/RGB-D：初始深度较准，要求更严格（3帧观测），以保证精度。
         nThObs = 3;
     const int cnThObs = nThObs;
 
+    // 2. 遍历检查 (The Inspection Loop)
     int borrar = mlpRecentAddedMapPoints.size();
 
     while(lit!=mlpRecentAddedMapPoints.end())
     {
         MapPoint* pMP = *lit;
-
+        // 检查 1：是否已经被标记为坏点？： 该点可能在 Bundle Adjustment (BA) 优化或回环检测中已经被判定为无效。
         if(pMP->isBad())
             lit = mlpRecentAddedMapPoints.erase(lit);
+        // 跟踪匹配率检测 (The "Found Ratio" Test)： 如果这个点在视野内（被投影到了图像上），但实际能匹配上特征点的概率低于 25%。这说明该点非常不稳定（可能是反光、阴影、遮挡边缘或重复纹理）。
         else if(pMP->GetFoundRatio()<0.25f)
         {
             pMP->SetBadFlag();
             lit = mlpRecentAddedMapPoints.erase(lit);
         }
+        // 观测数量检测 (The "Observation Count" Test)： 正常情况下，一个好的地图点应该随着相机移动被后续的多个关键帧连续观测到。如果过了几帧它还只有极少的观测（通常只有创建它的那两帧），说明它是不可靠的（可能是动态物体或虚假匹配）。
         else if(((int)nCurrentKFid-(int)pMP->mnFirstKFid)>=2 && pMP->Observations()<=cnThObs)
         {
             pMP->SetBadFlag();
             lit = mlpRecentAddedMapPoints.erase(lit);
         }
+        // 通过考核，光荣毕业 (Graduation)： 如果一个点已经创建了 3个关键帧 以上，并且没有被前面的 if 杀死。这是一个高质量的、稳定的地图点。
         else if(((int)nCurrentKFid-(int)pMP->mnFirstKFid)>=3)
             lit = mlpRecentAddedMapPoints.erase(lit);
+        // 继续观察 (Keep Waiting)： 该点刚创建不久（比如才过了1个关键帧），还没到可以判定生死的时刻。
         else
         {
             lit++;
@@ -388,16 +450,23 @@ void LocalMapping::MapPointCulling()
     }
 }
 
-
+/*
+利用当前关键帧（Current KeyFrame）与相邻关键帧（Neighbor KeyFrames），通过三角化（Triangulation）恢复出新的 3D 地图点
+*/
 void LocalMapping::CreateNewMapPoints()
 {
+
+    // 挑选“邻居”关键帧 (Select Neighbor KeyFrames)： 
     // Retrieve neighbor keyframes in covisibility graph
     int nn = 10;
     // For stereo inertial case
     if(mbMonocular)
         nn=30;
+
+    // 1. 获取共视程度最高的邻居 (默认10个，单目30个)
     vector<KeyFrame*> vpNeighKFs = mpCurrentKeyFrame->GetBestCovisibilityKeyFrames(nn);
 
+    // 2. (如果是惯性模式) 补充时间上的邻居
     if (mbInertial)
     {
         KeyFrame* pKF = mpCurrentKeyFrame;
@@ -715,8 +784,22 @@ void LocalMapping::CreateNewMapPoints()
     }    
 }
 
+/*
+它的核心目的是： 数据关联（Data Association）与点云融合（Point Fusion）。
+
+简单来说，之前的步骤（ProcessNewKeyFrame 和 CreateNewMapPoints）建立了新关键帧和新地图点的初步关系。
+
+而 SearchInNeighbors 则是为了**“查漏补缺”和“去重”**：
+
+看看新关键帧里的点，是不是邻居帧也看到了，但没关联上？
+
+看看邻居帧里的点，是不是新关键帧也看到了，但漏掉了？
+
+如果发现两个不同的地图点其实是同一个物理点，就把它们合并（Fuse）。
+*/
 void LocalMapping::SearchInNeighbors()
 {
+    // 
     // Retrieve neighbor keyframes
     int nn = 10;
     if(mbMonocular)

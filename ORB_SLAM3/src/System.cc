@@ -267,7 +267,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, 
         exit(-1);
     }
 
-    // 矫正图像、缩放图像
+    // 矫正图像、 缩放图像
     cv::Mat imLeftToFeed, imRightToFeed;
     if(settings_ && settings_->needToRectify()){
         cv::Mat M1l = settings_->M1l();
@@ -287,7 +287,7 @@ Sophus::SE3f System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, 
         imRightToFeed   = imRight.clone();
     }
 
-
+    // 检查定位模式的改变： 定位模式/
     // Check mode change
     {
         unique_lock<mutex> lock(mMutexMode);

@@ -5,6 +5,7 @@
 /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper/CMakeFiles/rgbd_imu.dir
 /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper/CMakeFiles/mono_imu.dir
 /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper/CMakeFiles/stereo.dir
+/home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper/CMakeFiles/stereo_imu.dir
 /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper/CMakeFiles/typeconversionTests.dir
 /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper/CMakeFiles/test.dir
 /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper/CMakeFiles/edit_cache.dir

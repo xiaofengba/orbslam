@@ -4,6 +4,15 @@
     ```
     find_package(OpenCV 4.5.4 EXACT REQUIRED)
     ```
+3. 如果运行出错记得检查`opencv的版本`
+    包装器的opencv版本
+    ```
+    ldd install/orb_slam3_ros2_wrapper/lib/orb_slam3_ros2_wrapper/stereo | grep opencv_core
+    ```
+    ORBSLAM3的opencv版本
+    ```
+    ldd /home/ubuntu/workspaces/orbslam/ORB_SLAM3/lib/libORB_SLAM3.so | grep opencv_core
+    ```
 
 # ORB_SLAM3 核心库编译
 1. 流程

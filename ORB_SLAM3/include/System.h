@@ -104,6 +104,8 @@ public:
     // Initialize the SLAM system. It launches the Local Mapping, Loop Closing and Viewer threads.
     System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor, const bool bUseViewer = true, const bool bDoLoopClosing = true, const int initFr = 0, const string &strSequence = std::string());
 
+
+    /*-----------------------------------------传感器输入处理-------------------------------------------------*/
     // Proccess the given stereo frame. Images must be synchronized and rectified.
     // Input images: RGB (CV_8UC3) or grayscale (CV_8U). RGB is converted to grayscale.
     // Returns the camera pose (empty if tracking fails).
@@ -121,6 +123,7 @@ public:
     Sophus::SE3f TrackMonocular(const cv::Mat &im, const double &timestamp, const vector<IMU::Point>& vImuMeas = vector<IMU::Point>(), string filename="");
 
 
+    /*-----------------------------------------系统状态处理-------------------------------------------------*/
     // This stops local mapping thread (map building) and performs only camera tracking.
     void ActivateLocalizationMode();
     // This resumes local mapping thread and performs SLAM again.
@@ -140,6 +143,8 @@ public:
     void Shutdown();
     bool isShutDown();
 
+
+    /*-----------------------------------------系统数据的保存-------------------------------------------------*/
     // Save camera trajectory in the TUM RGB-D dataset format.
     // Only for stereo and RGB-D. This method does not work for monocular.
     // Call first Shutdown()
@@ -171,6 +176,7 @@ public:
     // SaveMap(const string &filename);
     // LoadMap(const string &filename);
 
+    /*-----------------------------------------接口-------------------------------------------------*/
     // Information from most recent processed frame
     // You can call this right after TrackMonocular (or stereo or RGBD)
     int GetTrackingState();
@@ -203,69 +209,89 @@ private:
 
     string CalculateCheckSum(string filename, int type);
 
-    // Input sensor
-    eSensor mSensor;
+    /*
+    前缀 m  : 表示该变量是类（Class）的 成员变量（Member Variable）, 后续可以不使用 this-> 。
+    前缀 mb : 表示该变量是类（Class）的 成员变量bool类型
+    前缀 mp : 表示该变量是类（Class）的 成员变量的指针
+    */
 
+
+    // 输入的传感器
+    eSensor         mSensor;
+
+    // ORB 词典管理：   位置识别、特征匹配
     // ORB vocabulary used for place recognition and feature matching.
-    ORBVocabulary* mpVocabulary;
+    ORBVocabulary*  mpVocabulary;
 
+    // 关键帧管理：     重识别、回环检测
     // KeyFrame database for place recognition (relocalization and loop detection).
     KeyFrameDatabase* mpKeyFrameDatabase;
 
+    // 地图集管理：     关键帧、地图点
     // Map structure that stores the pointers to all KeyFrames and MapPoints.
-    //Map* mpMap;
-    Atlas* mpAtlas;
+    // Map* mpMap;
+    Atlas*          mpAtlas;
 
+    // 特征追踪器：     相机位置姿态、关键帧管理、地图点的创建、追踪丢失的状态机
     // Tracker. It receives a frame and computes the associated camera pose.
     // It also decides when to insert a new keyframe, create some new MapPoints and
     // performs relocalization if tracking fails.
-    Tracking* mpTracker;
+    Tracking*       mpTracker;
 
+    // 局部地图管理器：  局部地图管理、执行局部BA
     // Local Mapper. It manages the local map and performs local bundle adjustment.
-    LocalMapping* mpLocalMapper;
+    LocalMapping*   mpLocalMapper;
 
+    // 回环检测管理：    对所有关键帧的回环检测、执行PGO、Full BA
     // Loop Closer. It searches loops with every new keyframe. If there is a loop it performs
     // a pose graph optimization and full bundle adjustment (in a new thread) afterwards.
-    LoopClosing* mpLoopCloser;
+    LoopClosing*    mpLoopCloser;
 
+    // UI窗口管理器：    绘制地图、绘制当前相机位置姿态
     // The viewer draws the map and the current camera pose. It uses Pangolin.
     Viewer* mpViewer;
 
-    FrameDrawer* mpFrameDrawer;
-    MapDrawer* mpMapDrawer;
+    FrameDrawer*    mpFrameDrawer;
+    MapDrawer*      mpMapDrawer;
 
+    // 系统线程：        局部地图构建、回环检测和全局地图构建、UI界面
     // System threads: Local Mapping, Loop Closing, Viewer.
     // The Tracking thread "lives" in the main execution thread that creates the System object.
     std::thread* mptLocalMapping;
     std::thread* mptLoopClosing;
     std::thread* mptViewer;
 
+    // 复位标志和对应的互斥锁
     // Reset flag
     std::mutex mMutexReset;
     bool mbReset;
     bool mbResetActiveMap;
 
+    // 模式改变的标志和对应的互斥锁
     // Change mode flags
     std::mutex mMutexMode;
     bool mbActivateLocalizationMode;
     bool mbDeactivateLocalizationMode;
 
+    // 关机状态和对应的互斥锁
     // Shutdown flag
     bool mbShutDown;
     bool mbLoopClosing;
 
+    // 跟踪状态标志、容器、互斥锁
     // Tracking state
     int mTrackingState;
     std::vector<MapPoint*> mTrackedMapPoints;
     std::vector<cv::KeyPoint> mTrackedKeyPointsUn;
     std::mutex mMutexState;
 
-    //
+    // TODO的事项，用于加载地图和保存地图
     string mStrLoadAtlasFromFile;
     string mStrSaveAtlasToFile;
 
     string mStrVocabularyFilePath;
 
+    // 系统设置管理器
     Settings* settings_;
 };
 

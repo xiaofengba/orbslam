@@ -158,10 +158,9 @@ rgbd_imu: /usr/lib/x86_64-linux-gnu/libusb-1.0.so
 rgbd_imu: /usr/lib/x86_64-linux-gnu/libOpenNI2.so
 rgbd_imu: /usr/lib/x86_64-linux-gnu/libusb-1.0.so
 rgbd_imu: /opt/ros/humble/lib/libcv_bridge.so
-rgbd_imu: /usr/local/lib/libopencv_imgcodecs.so.4.8.0
-rgbd_imu: /usr/local/lib/libopencv_imgproc.so.4.8.0
-rgbd_imu: /usr/local/lib/libopencv_core.so.4.8.0
-rgbd_imu: /usr/local/lib/libopencv_cudev.so.4.8.0
+rgbd_imu: /usr/lib/x86_64-linux-gnu/libopencv_imgcodecs.so.4.5.4d
+rgbd_imu: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.4.5.4d
+rgbd_imu: /usr/lib/x86_64-linux-gnu/libopencv_core.so.4.5.4d
 rgbd_imu: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_typesupport_fastrtps_c.so
 rgbd_imu: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_typesupport_fastrtps_cpp.so
 rgbd_imu: /home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/install/slam_msgs/lib/libslam_msgs__rosidl_typesupport_introspection_c.so

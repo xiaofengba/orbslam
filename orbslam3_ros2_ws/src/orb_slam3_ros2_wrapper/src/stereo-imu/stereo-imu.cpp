@@ -1,0 +1,29 @@
+#include <iostream>
+
+#include "rclcpp/rclcpp.hpp"
+#include "stereo-imu-slam-node.hpp"
+
+int main(int argc, char **argv)
+{
+    if (argc < 3)
+    {
+        std::cerr << "\nUsage: ros2 run orb_slam3_ros2_wrapper stereo path_to_vocabulary path_to_settings" << std::endl;
+        return 1;
+    }
+
+    rclcpp::init(argc, argv);
+
+    std::cout << "***" << std::endl;
+    // 实际核心调用的是： stereo-slam-node 这个程序
+    // 构建一个双目SLAM的节点， 传入了ROS参数、 ORBSLAM参数、 ORBSLAM双目
+    auto node = std::make_shared<ORB_SLAM3_Wrapper::StereoIMUSlamNode>(
+            argv[1], argv[2], ORB_SLAM3::System::IMU_STEREO);
+
+    auto executor = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
+    executor->add_node(node);
+    executor->spin();
+    rclcpp::shutdown();
+
+    return 0;
+}
+

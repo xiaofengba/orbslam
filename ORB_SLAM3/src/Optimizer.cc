@@ -2391,6 +2391,10 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
         maxOpt=25;
         opt_it=4;
     }
+
+    // 原则： 它不再是像“葡萄串”一样基于共视关系抓取邻居，而是像“链条”一样基于 mPrevKF 抓取最近的 N 帧, 毕竟IMU的测量是时序上连续的。
+
+    // 1. 确定优化窗口大小
     const int Nd = std::min((int)pCurrentMap->KeyFramesInMap()-2,maxOpt);
     const unsigned long maxKFid = pKF->mnId;
 
@@ -2398,7 +2402,8 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
     const vector<KeyFrame*> vpNeighsKFs = pKF->GetVectorCovisibleKeyFrames();
     list<KeyFrame*> lpOptVisKFs;
 
-    vpOptimizableKFs.reserve(Nd);
+    // 2. 可优化的关键帧选择在 vpOptimizableKFs； 固定的关键帧在后面的 lFixedKeyFrames；
+    vpOptimizableKFs.reserve(Nd);               // 加入当前帧
     vpOptimizableKFs.push_back(pKF);
     pKF->mnBALocalForKF = pKF->mnId;
     for(int i=1; i<Nd; i++)
@@ -2414,6 +2419,8 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
 
     int N = vpOptimizableKFs.size();
 
+
+    // 可以优化的特征点：被时间窗口内的帧观测到的所有地图点
     // Optimizable points seen by temporal optimizable keyframes
     list<MapPoint*> lLocalMapPoints;
     for(int i=0; i<N; i++)
@@ -2432,6 +2439,7 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
         }
     }
 
+    // 3. 固定关键帧
     // Fixed Keyframe: First frame previous KF to optimization window)
     list<KeyFrame*> lFixedKeyFrames;
     if(vpOptimizableKFs.back()->mPrevKF)
@@ -2956,6 +2964,16 @@ void Optimizer::LocalInertialBA(KeyFrame *pKF, bool *pbStopFlag, Map *pMap, int&
 
     pMap->IncreaseChangeIndex();
 }
+
+
+
+
+
+
+
+
+
+
 
 Eigen::MatrixXd Optimizer::Marginalize(const Eigen::MatrixXd &H, const int &start, const int &end)
 {

@@ -14,7 +14,8 @@ int main(int argc, char **argv)
     rclcpp::init(argc, argv);
 
     std::cout << "***" << std::endl;
-    // 构建一个双目SLAM的节点，传入了 ROS参数、 ORBSLAM参数、 ORBSLAM双目
+    // 实际核心调用的是： stereo-slam-node 这个程序
+    // 构建一个双目SLAM的节点， 传入了ROS参数、 ORBSLAM参数、 ORBSLAM双目
     auto node = std::make_shared<ORB_SLAM3_Wrapper::StereoSlamNode>(
             argv[1], argv[2], ORB_SLAM3::System::STEREO);
 
