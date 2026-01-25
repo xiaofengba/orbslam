@@ -1,0 +1,78 @@
+[0.008s] Invoking command in '/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper': CMAKE_PREFIX_PATH=/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/slam_msgs:/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper:/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_map_generator:/home/sf/Sensor_Drive/CyperStereo/CyperstereoSDK/CyperStereo_ROS2_ws/install/data_cap:/opt/ros/humble /usr/bin/cmake --build /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper -- -j24 -l24
+[0.035s] [35m[1mConsolidate compiler generated dependencies of target gtest_main[0m
+[0.035s] [35m[1mConsolidate compiler generated dependencies of target gtest[0m
+[0.038s] [35m[1mConsolidate compiler generated dependencies of target orb_slam3_ros2_wrapper_common[0m
+[0.041s] [  7%] Built target gtest_main
+[0.043s] [ 14%] Built target gtest
+[0.053s] [35m[1mConsolidate compiler generated dependencies of target typeconversionTests[0m
+[0.058s] [ 33%] Built target orb_slam3_ros2_wrapper_common
+[0.067s] [35m[1mConsolidate compiler generated dependencies of target stereo_imu[0m
+[0.067s] [35m[1mConsolidate compiler generated dependencies of target mono_imu[0m
+[0.067s] [35m[1mConsolidate compiler generated dependencies of target rgbd[0m
+[0.067s] [35m[1mConsolidate compiler generated dependencies of target stereo[0m
+[0.068s] [35m[1mConsolidate compiler generated dependencies of target rgbd_imu[0m
+[0.071s] [ 44%] Built target typeconversionTests
+[0.085s] [ 55%] Built target stereo
+[0.086s] [ 66%] Built target rgbd
+[0.086s] [ 77%] Built target stereo_imu
+[0.086s] [ 88%] Built target mono_imu
+[0.092s] [100%] Built target rgbd_imu
+[0.099s] Invoked command in '/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper' returned '0': CMAKE_PREFIX_PATH=/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/slam_msgs:/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper:/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_map_generator:/home/sf/Sensor_Drive/CyperStereo/CyperstereoSDK/CyperStereo_ROS2_ws/install/data_cap:/opt/ros/humble /usr/bin/cmake --build /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper -- -j24 -l24
+[0.100s] Invoking command in '/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper': CMAKE_PREFIX_PATH=/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/slam_msgs:/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper:/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_map_generator:/home/sf/Sensor_Drive/CyperStereo/CyperstereoSDK/CyperStereo_ROS2_ws/install/data_cap:/opt/ros/humble /usr/bin/cmake --install /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper
+[0.104s] -- Install configuration: "Release"
+[0.104s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/lib/orb_slam3_ros2_wrapper/liborb_slam3_ros2_wrapper_common.so
+[0.104s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/lib/orb_slam3_ros2_wrapper/rgbd
+[0.104s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/lib/orb_slam3_ros2_wrapper/rgbd_imu
+[0.104s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/lib/orb_slam3_ros2_wrapper/mono_imu
+[0.104s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/lib/orb_slam3_ros2_wrapper/stereo
+[0.104s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/lib/orb_slam3_ros2_wrapper/stereo_imu
+[0.104s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch
+[0.104s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/unirobot.launch.py
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/rgbd_imu.launch.py
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/rgbd.launch.py
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/cyper_stereo.launch.py
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/d435i_stereo_imu.launch.py
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/mono_imu.launch.py
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/stereo.launch.py
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/__pycache__
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/__pycache__/d435i_stereo.launch.cpython-310.pyc
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/cyper_stereo_imu.launch.py
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/launch/d435i_stereo.launch.py
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/zed2i_kratos.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/zed2i.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orb_slam3_params
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orb_slam3_params/euroc_stereo.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orb_slam3_params/gazebo_rgbd.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orb_slam3_params/cyper_stereo.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orb_slam3_params/gazebo_mono_imu.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orb_slam3_params/gazebo_rgbd_imu.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orb_slam3_params/d435i_stereo_imu.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orb_slam3_params/d435i_stereo.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orb_slam3_params/cyper_stereo_imu.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/orbbec_astra.yaml
+[0.105s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/ros_params
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/ros_params/gazebo-mono-imu-ros-params.yaml
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/ros_params/cyper-stereo-ros-params.yaml
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/ros_params/gazebo-rgbd-ros-params.yaml
+[0.106s] -- Installing: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/ros_params/cyper-stereo-imu-ros-params.yaml
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/ros_params/gazebo-rgbd-imu-ros-params.yaml
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/ros_params/euroc-stereo-ros-params.yaml
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/ros_params/d435i-stereo-imu-ros-params.yaml
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/params/ros_params/d435i-stereo-ros-params.yaml
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/ament_index/resource_index/package_run_dependencies/orb_slam3_ros2_wrapper
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/ament_index/resource_index/parent_prefix_path/orb_slam3_ros2_wrapper
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/environment/ament_prefix_path.sh
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/environment/ament_prefix_path.dsv
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/environment/path.sh
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/environment/path.dsv
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/local_setup.bash
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/local_setup.sh
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/local_setup.zsh
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/local_setup.dsv
+[0.106s] -- Installing: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/package.dsv
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/ament_index/resource_index/packages/orb_slam3_ros2_wrapper
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/cmake/orb_slam3_ros2_wrapperConfig.cmake
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/cmake/orb_slam3_ros2_wrapperConfig-version.cmake
+[0.106s] -- Up-to-date: /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper/share/orb_slam3_ros2_wrapper/package.xml
+[0.107s] Invoked command in '/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper' returned '0': CMAKE_PREFIX_PATH=/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/slam_msgs:/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_ros2_wrapper:/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/install/orb_slam3_map_generator:/home/sf/Sensor_Drive/CyperStereo/CyperstereoSDK/CyperStereo_ROS2_ws/install/data_cap:/opt/ros/humble /usr/bin/cmake --install /home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper

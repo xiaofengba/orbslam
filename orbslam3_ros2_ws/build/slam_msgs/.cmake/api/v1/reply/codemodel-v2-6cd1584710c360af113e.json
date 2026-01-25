@@ -1,0 +1,233 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-8648b67cae5088a62d0a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17
+					]
+				},
+				{
+					"build" : "slam_msgs__py",
+					"jsonFile" : "directory-slam_msgs__py-1b59496d91857df9cf64.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/slam_msgs/slam_msgs__py",
+					"targetIndexes" : 
+					[
+						4
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "slam_msgs",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_slam_msgs_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_slam_msgs_egg-e5ed4fc063e8a55f0cb4.json",
+					"name" : "ament_cmake_python_build_slam_msgs_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_copy_slam_msgs::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_copy_slam_msgs-b8e8ef657d66e65235f2.json",
+					"name" : "ament_cmake_python_copy_slam_msgs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs-17714230642e0a61b061.json",
+					"name" : "slam_msgs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__cpp-ec752782477926c84076.json",
+					"name" : "slam_msgs__cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "slam_msgs__py::@906c20a5286e9f906c13",
+					"jsonFile" : "target-slam_msgs__py-2b9d4d09e63aa869a72c.json",
+					"name" : "slam_msgs__py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_generator_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_generator_c-ef2333dd248b4a3972b3.json",
+					"name" : "slam_msgs__rosidl_generator_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_generator_py::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_generator_py-9eaf125a56f646d72cc6.json",
+					"name" : "slam_msgs__rosidl_generator_py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_typesupport_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_typesupport_c-5480a1d3eb114b2973eb.json",
+					"name" : "slam_msgs__rosidl_typesupport_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_typesupport_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_typesupport_c__pyext-a0b26fb31c3f02ba7909.json",
+					"name" : "slam_msgs__rosidl_typesupport_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_typesupport_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_typesupport_cpp-1b9452e18d9b1b045b12.json",
+					"name" : "slam_msgs__rosidl_typesupport_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_typesupport_fastrtps_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_typesupport_fastrtps_c-cee7118be9026bce07b9.json",
+					"name" : "slam_msgs__rosidl_typesupport_fastrtps_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_typesupport_fastrtps_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_typesupport_fastrtps_c__pyext-844b675f6b87ddcd9983.json",
+					"name" : "slam_msgs__rosidl_typesupport_fastrtps_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_typesupport_fastrtps_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_typesupport_fastrtps_cpp-6623cd9aa4817a61da5c.json",
+					"name" : "slam_msgs__rosidl_typesupport_fastrtps_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_typesupport_introspection_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_typesupport_introspection_c-da794fc87c85661c5e65.json",
+					"name" : "slam_msgs__rosidl_typesupport_introspection_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_typesupport_introspection_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_typesupport_introspection_c__pyext-5f06b508c64fd3e3c0a9.json",
+					"name" : "slam_msgs__rosidl_typesupport_introspection_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs__rosidl_typesupport_introspection_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs__rosidl_typesupport_introspection_cpp-5d5a456eb97d6877cb92.json",
+					"name" : "slam_msgs__rosidl_typesupport_introspection_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slam_msgs_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slam_msgs_uninstall-bc74e39add5a3be76a05.json",
+					"name" : "slam_msgs_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-6c94c822a289d16d17cb.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/slam_msgs",
+		"source" : "/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/src/slam_msgs"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

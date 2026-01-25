@@ -1,0 +1,97 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-73f2e8328c56410e651e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "orb_slam3_map_generator",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "depth_image_to_pcl::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-depth_image_to_pcl-Release-8d323f0986365141b096.json",
+					"name" : "depth_image_to_pcl",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "get_landmarks_simulator::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-get_landmarks_simulator-Release-adbd4852fc08848f0a19.json",
+					"name" : "get_landmarks_simulator",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "orb_slam3_map_generator_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-orb_slam3_map_generator_uninstall-Release-8e99ad6405d7ac2eaf11.json",
+					"name" : "orb_slam3_map_generator_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "pointcloud_stitcher::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-pointcloud_stitcher-Release-da814ed4bb4cfd8f0b06.json",
+					"name" : "pointcloud_stitcher",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-c7ce8ab0fc2a472f326d.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_map_generator",
+		"source" : "/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/src/orb_slam3_map_generator"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

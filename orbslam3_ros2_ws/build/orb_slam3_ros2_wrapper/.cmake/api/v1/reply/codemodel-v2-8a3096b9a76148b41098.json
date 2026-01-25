@@ -1,0 +1,184 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-062049d8e17fcb46f83f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10
+					]
+				},
+				{
+					"build" : "gtest",
+					"jsonFile" : "directory-gtest-Release-a2408fe1a73b92c5e636.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "/opt/ros/humble/src/gtest_vendor",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "orb_slam3_ros2_wrapper",
+					"targetIndexes" : 
+					[
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "gtest",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "gtest::@0af4add9fe94340e763e",
+					"jsonFile" : "target-gtest-Release-d90896c62d3e14b21490.json",
+					"name" : "gtest",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "gtest_main::@0af4add9fe94340e763e",
+					"jsonFile" : "target-gtest_main-Release-1c50440fc9f4dad4b9ff.json",
+					"name" : "gtest_main",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mono_imu::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mono_imu-Release-cb01d4892a0e264e889c.json",
+					"name" : "mono_imu",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "orb_slam3_ros2_wrapper_common::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-orb_slam3_ros2_wrapper_common-Release-0f9a6bee1edafbb8a854.json",
+					"name" : "orb_slam3_ros2_wrapper_common",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "orb_slam3_ros2_wrapper_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-orb_slam3_ros2_wrapper_uninstall-Release-e81f7b73110291d83fb2.json",
+					"name" : "orb_slam3_ros2_wrapper_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rgbd::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rgbd-Release-3b79102f4f2b10dde4e0.json",
+					"name" : "rgbd",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rgbd_imu::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rgbd_imu-Release-ad85f63252e5ebdd1f52.json",
+					"name" : "rgbd_imu",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "stereo::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-stereo-Release-1ab8316a3e5d337bbf96.json",
+					"name" : "stereo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "stereo_imu::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-stereo_imu-Release-6b9d37456a11a8223ce2.json",
+					"name" : "stereo_imu",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "typeconversionTests::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-typeconversionTests-Release-fc70f47df4f350e305e4.json",
+					"name" : "typeconversionTests",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-Release-e117d456a029a4398279.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/orb_slam3_ros2_wrapper",
+		"source" : "/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/src/orb_slam3_ros2_wrapper"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

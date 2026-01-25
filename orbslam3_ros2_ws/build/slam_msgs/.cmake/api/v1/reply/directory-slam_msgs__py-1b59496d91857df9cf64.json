@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "slam_msgs__py",
+		"source" : "/home/sf/workspace/orb_slam3_second_ws/orbslam/orbslam3_ros2_ws/build/slam_msgs/slam_msgs__py"
+	}
+}
