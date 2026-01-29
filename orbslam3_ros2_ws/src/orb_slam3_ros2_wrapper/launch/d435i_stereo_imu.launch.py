@@ -4,81 +4,77 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess
-from launch.actions import IncludeLaunchDescription, OpaqueFunction
-from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, FindExecutable, TextSubstitution
+from launch.actions import DeclareLaunchArgument
+from launch.actions import OpaqueFunction
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 from nav2_common.launch import RewrittenYaml
 
 def generate_launch_description():
 
-#---------------------------------------------
-
-    #Essential_paths
+    # Essential_paths
     orb_wrapper_pkg = get_package_share_directory('orb_slam3_ros2_wrapper')
-#---------------------------------------------
 
-    # 参数配置： LAUNCH ARGS
+    # 1. 定义 LaunchConfiguration 占位符
     use_sim_time = LaunchConfiguration('use_sim_time')
+    robot_namespace = LaunchConfiguration('robot_namespace')
+    params_file = LaunchConfiguration('params_file') # 放到外面
+
+    # 2. 定义 Arguments (这些必须在 OpaqueFunction 之前被 return)
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         name='use_sim_time',
         default_value='True',
         description='Use simulation (Gazebo) clock if true')
 
-    robot_namespace =  LaunchConfiguration('robot_namespace')
-    robot_namespace_arg = DeclareLaunchArgument('robot_namespace', default_value="robot",
+    robot_namespace_arg = DeclareLaunchArgument(
+        'robot_namespace', 
+        default_value="robot",
         description='The namespace of the robot')
-#---------------------------------------------
+    
+    # [修复] 把它移到这里！
+    declare_params_file_cmd = DeclareLaunchArgument(
+        'params_file',
+        default_value=os.path.join(orb_wrapper_pkg, 'params', 'ros_params', 'd435i-stereo-imu-ros-params.yaml'),
+        description='Full path to the ROS2 parameters file to use for all launched nodes')
 
-    # 启动的入口
+    # 3. 启动逻辑
     def all_nodes_launch(context, robot_namespace):
-        params_file = LaunchConfiguration('params_file')
+        # 调试打印：现在这里能正确获取到路径了
+        print("Param file path: ", params_file.perform(context))
+
+        # 硬编码路径建议改为参数传入，或者检查路径是否正确
         vocabulary_file_path = "/home/ubuntu/workspaces/orbslam/ORB_SLAM3/Vocabulary/ORBvoc.txt"
         config_file_path = "/home/ubuntu/workspaces/orbslam/orbslam3_ros2_ws/src/orb_slam3_ros2_wrapper/params/orb_slam3_params/d435i_stereo_imu.yaml"
-        declare_params_file_cmd = DeclareLaunchArgument(
-            'params_file',
-            default_value=os.path.join(orb_wrapper_pkg, 'params', 'ros_params', 'd435i-stereo-ros-params.yaml'),
-            description='Full path to the ROS2 parameters file to use for all launched nodes')
 
-        base_frame = ""
-        if(robot_namespace.perform(context) == ""):
-            base_frame = ""
-        else:
-            base_frame = robot_namespace.perform(context) + "/"
+        param_substitutions = {}
 
-        param_substitutions = {
-            # 'robot_base_frame': base_frame + 'base_footprint',
-            # 'odom_frame': base_frame + 'odom'
-            }
-
-
+        # 配置 RewrittenYaml
         configured_params = RewrittenYaml(
-            source_file=params_file,
+            source_file=params_file, # 这里现在是有效的
             root_key=robot_namespace.perform(context),
             param_rewrites=param_substitutions,
             convert_types=True)
         
-        # 启动的核心节点： stereo
         orb_slam3_node = Node(
             package="orb_slam3_ros2_wrapper",
             executable="stereo_imu",
             output="screen",
-            # prefix=["gdbserver localhost:3000"],
             namespace=robot_namespace.perform(context),
+            # arguments 是传给 main() 函数的 argv，通常是 ORB-SLAM3 的词汇表和配置文件
             arguments=[vocabulary_file_path, config_file_path],
-            parameters=[configured_params])
+            # parameters 是 ROS 2 的节点参数，来自 yaml
+            parameters=[configured_params] 
+        )
         
-        return [declare_params_file_cmd, orb_slam3_node]
+        # 注意：这里只返回 Node，不要再返回 declare_params_file_cmd 了
+        return [orb_slam3_node]
 
     opaque_function = OpaqueFunction(function=all_nodes_launch, args=[robot_namespace])
-#---------------------------------------------
 
+    # 4. 返回 LaunchDescription
     return LaunchDescription([
         declare_use_sim_time_cmd,
         robot_namespace_arg,
+        declare_params_file_cmd, # [修复] 确保它在这里
         opaque_function
     ])
-
